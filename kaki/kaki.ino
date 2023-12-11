@@ -745,7 +745,7 @@ void cekPerintah() {
       inputBefore = input;
     }
   }
-  input = 1;
+  input = 0;
 
   if (inputBefore == 0) {
     setKaki();
