@@ -1,4 +1,3 @@
-#include <SPI.h>
 #include <Servo.h>
 #include <SpeedTrig.h>
 
@@ -64,7 +63,7 @@ Servo servo5_2;
 //#define delayJalanTempat 25
 
 int input = 0, inputBefore = 0;
-int delayKecepatan = 70;  //80
+int delayKecepatan = 30;  //80
 //int speeds = 400;         //600
 //int inputTangga = 0;
 //int inputPuing = 0;
@@ -115,16 +114,15 @@ int angle[18];
 int panjangData;
 unsigned char checksum;
 
+struct sys {
+  float pos, teta, tet;
+  int sel, prev_teta;
+} sys[18];
+
 struct leg {
-  int sudutDalam;
-  int sudutTengah;
-  int sudutLuar;
-  int posisi;
-  int motion;   // ada 4 motion
-  int gerakan;  // 0 = gerak segitiga     1 = dorong
-  float posisiX;
-  float posisiY;
-  float posisiZ;
+  int sudutDalam, sudutTengah, sudutLuar, posisi, motion, gerakan;  // ada 4 motion
+  float posisiX, posisiY, posisiZ;
+  // 0 = gerak segitiga     1 = dorong
 } leg[6];
 
 void inisialisasiAwal() {
@@ -141,7 +139,6 @@ void inisialisasiAwal() {
 void setKaki();
 
 void setup() {
-  SPI.begin(); //untuk memulai komunikasi SPI
   servo0_0.attach(servoDepanKanan_0);
   servo0_1.attach(servoDepanKanan_1);
   servo0_2.attach(servoDepanKanan_2);
@@ -181,9 +178,6 @@ void setup() {
   langkahDatar[17] = (lebarLangkahPivot / (rate * (2.8)));  //pivot Api
   inisialisasiAwal();
   syncLeg();
-  Serial.println("CLEARDATA"); //untuk membersihkan sheet
-  Serial.println("LABEL,Time,Started Time,Date,Potensio,Perubahan");
-  Serial.println("RESETTIMER");
 }
 
 long rad2deg(float rad) {
@@ -206,25 +200,65 @@ int float2int(float input) {
   else return temp + 1;
 }
 
+void robot_movement() {
+  for (int ang = 0; ang < 18; ang++) {
+    sys[ang].prev_teta = sys[ang].teta;
+    sys[ang].teta = angle[ang];
+    sys[ang].sel = sys[ang].teta - sys[ang].prev_teta;
+    if (sys[ang].sel < 0) sys[ang].sel = sys[ang].sel * (-1);
+  }
+  int min_s = min(sys[0].sel, sys[1].sel);
+  for (int i = 2; i < 18; i++) {
+    min_s = min(min_s, sys[i].sel);
+  }
+  if (min_s == 0) min_s = 1;
+  for (int i = 0; i <= min_s; i++) {
+    for (int ang = 0; ang < 18; ang++) {
+      sys[ang].tet = sys[ang].prev_teta + (((sys[ang].teta - sys[ang].prev_teta) / min_s) * i);
+      // Serial.println(leg[0].tet);
+    }
+    servo0_0.writeMicroseconds(gerakServo(sys[0].tet));
+    servo0_1.writeMicroseconds(gerakServo(sys[1].tet));
+    servo0_2.writeMicroseconds(gerakServo(sys[2].tet));
+    servo1_0.writeMicroseconds(gerakServo(sys[3].tet));
+    servo1_1.writeMicroseconds(gerakServo(sys[4].tet));
+    servo1_2.writeMicroseconds(gerakServo(sys[5].tet));
+    // servo2_0.writeMicroseconds(gerakServo(sys[6].tet));
+    // servo2_1.writeMicroseconds(gerakServo(sys[7].tet));
+    // servo2_2.writeMicroseconds(gerakServo(sys[8].tet));
+    servo3_0.writeMicroseconds(gerakServo(sys[9].tet));
+    servo3_1.writeMicroseconds(gerakServo(sys[10].tet));
+    servo3_2.writeMicroseconds(gerakServo(sys[11].tet));
+    // servo4_0.writeMicroseconds(gerakServo(sys[12].tet));
+    // servo4_1.writeMicroseconds(gerakServo(sys[13].tet));
+    // servo4_2.writeMicroseconds(gerakServo(sys[14].tet));
+    servo5_0.writeMicroseconds(gerakServo(sys[15].tet));
+    servo5_1.writeMicroseconds(gerakServo(sys[16].tet));
+    servo5_2.writeMicroseconds(gerakServo(sys[17].tet));
+    delay(delayKecepatan);
+  }
+}
+
 void syncWrite() {
-  servo0_0.write(gerakServo(angle[0]));
-  servo0_1.write(gerakServo(angle[1]));
-  servo0_2.write(gerakServo(angle[2]));
-  // servo1_0.write(gerakServo(angle[3]));
-  // servo1_1.write(gerakServo(angle[4]));
-  // servo1_2.write(gerakServo(angle[5]));
-  // servo2_0.write(gerakServo(angle[6]));
-  // servo2_1.write(gerakServo(angle[7]));
-  // servo2_2.write(gerakServo(angle[8]));
-  // servo3_0.write(gerakServo(angle[9]));
-  // servo3_1.write(gerakServo(angle[10]));
-  // servo3_2.write(gerakServo(angle[11]));
-  // servo4_0.write(gerakServo(angle[12]));
-  // servo4_1.write(gerakServo(angle[13]));
-  // servo4_2.write(gerakServo(angle[14]));
-  // servo5_0.write(gerakServo(angle[15]));
-  // servo5_1.write(gerakServo(angle[16]));
-  // servo5_2.write(gerakServo(angle[17]));
+  servo0_0.writeMicroseconds(gerakServo(angle[0]));
+  servo0_1.writeMicroseconds(gerakServo(angle[1]));
+  servo0_2.writeMicroseconds(gerakServo(angle[2]));
+  // servo1_0.writeMicroseconds(gerakServo(angle[3]));
+  // servo1_1.writeMicroseconds(gerakServo(angle[4]));
+  // servo1_2.writeMicroseconds(gerakServo(angle[5]));
+  // servo2_0.writeMicroseconds(gerakServo(angle[6]));
+  // servo2_1.writeMicroseconds(gerakServo(angle[7]));
+  // servo2_2.writeMicroseconds(gerakServo(angle[8]));
+  // servo3_0.writeMicroseconds(gerakServo(angle[9]));
+  // servo3_1.writeMicroseconds(gerakServo(angle[10]));
+  // servo3_2.writeMicroseconds(gerakServo(angle[11]));
+  // servo4_0.writeMicroseconds(gerakServo(angle[12]));
+  // servo4_1.writeMicroseconds(gerakServo(angle[13]));
+  // servo4_2.writeMicroseconds(gerakServo(angle[14]));
+  // servo5_0.writeMicroseconds(gerakServo(angle[15]));
+  // servo5_1.writeMicroseconds(gerakServo(angle[16]));
+  // servo5_2.writeMicroseconds(gerakServo(angle[17]));
+  delay(delayKecepatan);
 }
 
 void setServo(int idLeg, int sudut1, int sudut2, int sudut3) {
@@ -262,7 +296,8 @@ void syncLeg() {
   setServo(3, leg[3].sudutDalam, leg[3].sudutTengah, leg[3].sudutLuar);
   setServo(4, leg[4].sudutDalam, leg[4].sudutTengah, leg[4].sudutLuar);
   setServo(5, leg[5].sudutDalam, leg[5].sudutTengah, leg[5].sudutLuar);
-  syncWrite();
+  robot_movement();
+  // syncWrite();
 }
 
 void inverse(int idLeg, float x, float y, float z) {
@@ -276,7 +311,7 @@ void inverse(int idLeg, float x, float y, float z) {
 
   // x = x + 10;
   // y = y + 50;
-  z = 40 - z;
+  z = 30 - z;
   degree1 = SpeedTrig.atan2(x, y);
   L1 = sqrt((x * x) + (y * y));  //akar x^2 + y^2
 
@@ -287,6 +322,9 @@ void inverse(int idLeg, float x, float y, float z) {
   L_2 = L * L;
 
   degree2_1 = SpeedTrig.atan2(z, Lcox);
+  Serial.println(z);
+  Serial.println(Lcox);
+  Serial.println(degree2_1);
   temp2 = ((L_2 + femur_2 - tibia_2) / (2 * femur * L));
   degree2_2 = SpeedTrig.acos(temp2);
   degree2_1 = degree2_1 * -1;
@@ -316,6 +354,16 @@ void inverse(int idLeg, float x, float y, float z) {
   }
   // Serial.println(sudut3);
   // sudut3 = 180 - sudut3;
+  // Serial.println("----------------------------------");
+  // Serial.println("posisi :");
+  // Serial.println(x);
+  // Serial.println(y);
+  // Serial.println(z);
+  // Serial.println("sudut :");
+  // Serial.println(sudut1);
+  // Serial.println(sudut2);
+  // Serial.println(sudut3);
+  // Serial.println("----------------------------------");
 
   leg[idLeg].sudutDalam = sudut1;
   leg[idLeg].sudutTengah = sudut2;
@@ -745,7 +793,7 @@ void cekPerintah() {
       inputBefore = input;
     }
   }
-  input = 0;
+  input = 1;
 
   if (inputBefore == 0) {
     setKaki();
@@ -777,57 +825,56 @@ void cekPerintah() {
   } else {
     syncLeg();
   }
-  delay(delayKecepatan);
 }
 
 void pasangKaki() {
-  servo0_0.write(gerakServo(0));
-  servo0_1.write(gerakServo(0));
-  servo0_2.write(gerakServo(90 + 10));
+  servo0_0.writeMicroseconds(gerakServo(0));
+  servo0_1.writeMicroseconds(gerakServo(0));
+  servo0_2.writeMicroseconds(gerakServo(90 + 10));
 
-  servo1_0.write(gerakServo(45));
-  servo1_1.write(gerakServo(0));
-  servo1_2.write(gerakServo(90));
+  servo1_0.writeMicroseconds(gerakServo(45));
+  servo1_1.writeMicroseconds(gerakServo(0));
+  servo1_2.writeMicroseconds(gerakServo(90));
 
-  servo2_0.write(gerakServo(90));
-  servo2_1.write(gerakServo(0));
-  servo2_2.write(gerakServo(90));
+  servo2_0.writeMicroseconds(gerakServo(90));
+  servo2_1.writeMicroseconds(gerakServo(0));
+  servo2_2.writeMicroseconds(gerakServo(90));
 
-  servo3_0.write(gerakServo(0));
-  servo3_1.write(gerakServo(0));
-  servo3_2.write(gerakServo(90));
+  servo3_0.writeMicroseconds(gerakServo(0));
+  servo3_1.writeMicroseconds(gerakServo(0));
+  servo3_2.writeMicroseconds(gerakServo(90));
 
-  servo4_0.write(gerakServo(45 - 5));
-  servo4_1.write(gerakServo(0));
-  servo4_2.write(gerakServo(90));
+  servo4_0.writeMicroseconds(gerakServo(45 - 5));
+  servo4_1.writeMicroseconds(gerakServo(0));
+  servo4_2.writeMicroseconds(gerakServo(90));
 
-  servo5_0.write(gerakServo(100 + 3));
-  servo5_1.write(gerakServo(20));  //0
-  servo5_2.write(gerakServo(90));
+  servo5_0.writeMicroseconds(gerakServo(100 + 3));
+  servo5_1.writeMicroseconds(gerakServo(20));  //0
+  servo5_2.writeMicroseconds(gerakServo(90));
 }
 
 void diam() {
   int ata = 45;
   int ten = 45;
   int baw = 100;
-  // servo0_0.write(gerakServo(ata));
-  // servo0_1.write(gerakServo(ten));
-  // servo0_2.write(gerakServo(baw + 10));
-  servo1_0.write(gerakServo(ata));
-  servo1_1.write(gerakServo(ten));
-  servo1_2.write(gerakServo(baw));
-  servo2_0.write(gerakServo(ata));
-  servo2_1.write(gerakServo(ten));
-  servo2_2.write(gerakServo(baw));
-  servo3_0.write(gerakServo(ata));
-  servo3_1.write(gerakServo(ten));
-  servo3_2.write(gerakServo(baw));
-  servo4_0.write(gerakServo(ata - 5));
-  servo4_1.write(gerakServo(ten));
-  servo4_2.write(gerakServo(baw));
-  servo5_0.write(gerakServo(ata + 3));
-  servo5_1.write(gerakServo(ten));
-  servo5_2.write(gerakServo(baw));
+  // servo0_0.writeMicroseconds(gerakServo(ata));
+  // servo0_1.writeMicroseconds(gerakServo(ten));
+  // servo0_2.writeMicroseconds(gerakServo(baw + 10));
+  // servo1_0.writeMicroseconds(gerakServo(ata));
+  // servo1_1.writeMicroseconds(gerakServo(ten));
+  // servo1_2.writeMicroseconds(gerakServo(baw));
+  servo2_0.writeMicroseconds(gerakServo(ata));
+  servo2_1.writeMicroseconds(gerakServo(ten));
+  servo2_2.writeMicroseconds(gerakServo(baw));
+  // servo3_0.writeMicroseconds(gerakServo(ata));
+  // servo3_1.writeMicroseconds(gerakServo(ten));
+  // servo3_2.writeMicroseconds(gerakServo(baw));
+  servo4_0.writeMicroseconds(gerakServo(ata - 5));
+  servo4_1.writeMicroseconds(gerakServo(ten));
+  servo4_2.writeMicroseconds(gerakServo(baw));
+  // servo5_0.writeMicroseconds(gerakServo(ata + 3));
+  // servo5_1.writeMicroseconds(gerakServo(ten));
+  // servo5_2.writeMicroseconds(gerakServo(baw));
 }
 
 void loop() {
@@ -835,17 +882,6 @@ void loop() {
   // pasangKaki();
   diam();
   cekPerintah();
-  // Serial.print("DATA, TIME, TIMER, DATE,");
-  // Serial.println("----------------------------------");
-  // Serial.println("posisi :");
-  // Serial.println(x);
-  // Serial.println(y);
-  // Serial.println(z);
-  // Serial.println("sudut :");
-  // Serial.println(leg[2].sudutDalam);
-  // Serial.println(leg[2].sudutTengah);
-  // Serial.println(leg[2].sudutLuar);
-  // Serial.println("----------------------------------");
 
   // delay(800);
   // Serial.println("halo");
