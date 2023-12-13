@@ -1,8 +1,6 @@
 # program_hexapod_robot_legacy
- program trayektori, inverse kinematic, dan body kinematic
- dibuat pada desember, 2023
+Trajectory program, inverse kinematics, and body kinematics were developed in December 2023.
 
- 1. program kaki adalah program pengembangan untuk menggerakkan robot 
- 2. program kaki_trayektori_baru adalah program trayektori orde3 yang masih dalam tahap pengembangan
- untuk kedepannya program untuk kaki yang dikembangkan adalah program kaki.ino
+1. The leg program is a developmental program to move the robot.
+2. The leg_trajectory_new program is a third-order trajectory program still in the development stage. For the future, the developed leg program will be the leg.ino program.
  
