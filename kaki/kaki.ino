@@ -47,30 +47,10 @@ Servo servo5_2;
 #define lebarLangkah 32    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
 #define tinggiLangkah 24   //tinggi langkah dibagi rate harus bulat
 #define delayKecepatan 30  //80
+#define lebarLangkahPivot 12
 #define Zoff 25
 
-//int gantiKaki = 0;
-//int gantiKakiDorong = 0;
-//int gantiKakiBelakang = 0;
-
-#define lebarLangkahPivot 12
-
-//#define endCom() (Serial.end())                               // End Serial Comunication
-//#define switchCom(DirPin, Mode) (digitalwrite(DirPin, Mode))  // Switch to TX/RX Mode
-//#define pin 6
-//#define Tx_MODE 1
-//#define Rx_MODE 0
-
-//#define delayJalanTempat 25
-
-// int input = 0; 
 int inputBefore = 0;
-//int speeds = 400;         //600
-//int inputTangga = 0;
-//int inputPuing = 0;
-//int inputKorban = 0;
-//int posKaki;
-//int inputSebelum;
 void syncLeg();
 
 float posisiAwal = ((coxa + femur) / 1.45);  //1.5
@@ -81,11 +61,8 @@ int rate1 = (rate + 1);
 int rate2 = ((rate * 2) + 1);
 int rate3 = ((rate * 3) + 1);
 int rate4 = ((rate * 4) + 1);
-// int ubahGerak = 0;
-//int prepareZ = 0;
 int indexKanan = 0;
 int indexKiri = 0;
-//int dorong = 65;
 
 int tinggiKakiKananDepan;
 int tinggiKakiKananTengah;
@@ -108,13 +85,7 @@ int putarKakiKiriBelakang;
 int putarKakiKiriTengah;
 int putarKakiKiriDepan;
 
-// int head;
-// int angka = 0;
-// int arah = 0;
 int angle[18];
-
-// int panjangData;
-// unsigned char checksum;
 
 struct sys {
   float pos, teta, tet;
@@ -871,20 +842,20 @@ void pasangKaki() {
 
 void diam() {
   int ata = 45;   //semakin kecil semakin
-  int ten = 20;   //semakin kecil semakin
-  int baw = 110;  //semakin kecil semakin ketutup
+  int ten = 60;   //semakin kecil semakin
+  int baw = 90;  //semakin kecil semakin ketutup
   servo0_0.writeMicroseconds(gerakServo(ata));
   servo0_1.writeMicroseconds(gerakServo(ten));
-  servo0_2.writeMicroseconds(gerakServo(baw));
+  servo0_2.writeMicroseconds(gerakServo(baw + 10));
   servo1_0.writeMicroseconds(gerakServo(ata));
   servo1_1.writeMicroseconds(gerakServo(ten));
   servo1_2.writeMicroseconds(gerakServo(baw));
   servo2_0.writeMicroseconds(gerakServo(ata));
   servo2_1.writeMicroseconds(gerakServo(ten));
   servo2_2.writeMicroseconds(gerakServo(baw + 5));
-  // servo3_0.writeMicroseconds(gerakServo(ata));
-  // servo3_1.writeMicroseconds(gerakServo(ten));
-  // servo3_2.writeMicroseconds(gerakServo(baw));
+  servo3_0.writeMicroseconds(gerakServo(ata));
+  servo3_1.writeMicroseconds(gerakServo(ten));
+  servo3_2.writeMicroseconds(gerakServo(baw));
   servo4_0.writeMicroseconds(gerakServo(ata - 5));
   servo4_1.writeMicroseconds(gerakServo(ten));
   servo4_2.writeMicroseconds(gerakServo(baw));
@@ -894,14 +865,14 @@ void diam() {
 }
 
 void loop() {
-  int input = 1;
+  int input = 0;
   // inverse(3,,5,4,5);
   // pasangKaki();
   cekPerintah(input);
   // Serial.println("degree2_1");
   // delay(800);
   // Serial.println(posisiAwal);
-  diam();
+  // diam();
   // for (int i = 30; i <= 900; i++) {
   // diam();
   //   int id = 0;
