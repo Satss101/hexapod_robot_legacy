@@ -47,7 +47,7 @@ Servo servo5_2;
 #define lebarLangkah 60    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
 #define tinggiLangkah 80   //tinggi langkah dibagi rate harus bulat
 #define delayKecepatan 20  //80
-#define lebarLangkahPivot 400
+#define lebarLangkahPivot 20
 #define Zoff -10
 
 int inputBefore = 0;
@@ -853,10 +853,10 @@ void diam() {
   // servo0_0.writeMicroseconds(gerakServo(ata));
   // servo0_1.writeMicroseconds(gerakServo(ten));
   // servo0_2.writeMicroseconds(gerakServo(baw + 10));
-  // servo1_0.writeMicroseconds(gerakServo(ata));
+  // servo1_0.writeMicroseconds(gerakServo(ata + 45));
   // servo1_1.writeMicroseconds(gerakServo(ten));
   // servo1_2.writeMicroseconds(gerakServo(baw));
-  // servo2_0.writeMicroseconds(gerakServo(ata));
+  // servo2_0.writeMicroseconds(gerakServo(ata + 90));
   // servo2_1.writeMicroseconds(gerakServo(ten));
   // servo2_2.writeMicroseconds(gerakServo(baw + 5));
 
@@ -871,10 +871,9 @@ void diam() {
   servo5_2.writeMicroseconds(gerakServo(baw));
 }
 
-int input = 1;
-int ubahGerak = 1;
-
 void loop() {
+  int input = 0;
+  int ubahGerak = 1;
   // inverse(3,,5,4,5);
   // pasangKaki();
   cekPerintah(input, ubahGerak);
@@ -884,10 +883,10 @@ void loop() {
   diam();
   // for (int i = 30; i <= 900; i++) {
   // diam();
-  //   int id = 0;
-  //   inverse(id, 66.32, 66.32, i);
-  //   setServo(id, leg[id].sudutDalam, leg[id].sudutTengah, leg[id].sudutLuar);
-  //   robot_movement();
-  //   delay(10);
+  // int id = 0;
+  // inverse(id, 126, 96, 70);
+  // setServo(id, leg[id].sudutDalam, leg[id].sudutTengah, leg[id].sudutLuar);
+  // syncLeg();
+  // delay(10);
   // }
 }
