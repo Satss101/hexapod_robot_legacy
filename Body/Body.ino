@@ -242,7 +242,7 @@ void LegIK() {
   int NewPosX_6 = ((servoDepanKiri_0 + PosX) + BodyIKX_6);
   int NewPosZ_6 = ((servoDepanKiri_2 + PosZ) + BodyIKZ_6);
   int NewPosY_6 = ((servoDepanKiri_1 + PosY) + BodyIKY_6);
-  int CoxaFeetDist_6 = sqrt((NewPosX_6 *NewPosX_^) + (NewPosY_6 * NewPosY_6));
+  int CoxaFeetDist_6 = sqrt((NewPosX_6 * NewPosX_6) + (NewPosY_6 * NewPosY_6));
   int IKSW_6 = sqrt(((CoxaFeetDist_6 - CoxaLength) * (CoxaFeetDist_6 - CoxaLength)) + (NewPosZ_6 * NewPosZ_6));
   int IKA1_6 = atan((CoxaFeetDist_6 - CoxaLength) / NewPosZ_6);
   int IKA2_6 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_6 * IKSW_6)) / (-2 * IKSW_6 * FemurLength));
