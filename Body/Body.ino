@@ -88,7 +88,7 @@ int servoDepanKiri_2;
 
 void InitialLeg() {
   Serial.begin(1000000);
-  servoDepanKanan_0 = (cos(60 / 180 * PI) * (CoxaLength + FemurLength));
+  servoDepanKanan_0 = (cos((60 / 180) * PI) * (CoxaLength + FemurLength));
   servoDepanKanan_2 = TibiaLength;
   servoDepanKanan_1 = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
   servoTengahKanan_0 = (CoxaLength + FemurLength);
@@ -114,8 +114,8 @@ void BodyIk() {
 
 
 
-  int TotalY_1 = (servoDepanKanan_1 + BodyCenterOffsetY_1 + PosY);
-  int TotalX_1 = (servoDepanKanan_0 + BodyCenterOffsetX_1 + PosX);
+  int TotalY_1 = ((servoDepanKanan_1 + BodyCenterOffsetY_1) + PosY);
+  int TotalX_1 = ((servoDepanKanan_0 + BodyCenterOffsetX_1) + PosX);
   int DistBodyCenterFeet_1 = sqrt((TotalY_1 * TotalY_1) + (TotalX_1 * TotalX_1));
   int AngleBodyCenterX_1 = (PI / 2 - atan2(TotalY_1, TotalX_1));
   int RollZ_1 = (tan(RotZ * PI / 180) * TotalX_1);
@@ -124,8 +124,8 @@ void BodyIk() {
   int BodyIKY_1 = ((sin(AngleBodyCenterX_1 + (RotY * PI / 180)) * DistBodyCenterFeet_1) - TotalY_1);
   int BodyIKZ_1 = (RollZ_1 + PitchZ_1);
 
-  int TotalY_2 = (servoTengahKanan_1 + BodyCenterOffsetY_2 + PosY) ;
-  int TotalX_2 = (servoTengahKanan_0 + PosX + BodyCenterOffsetX_2) ;
+  int TotalY_2 = ((servoTengahKanan_1 + BodyCenterOffsetY_2) + PosY) ;
+  int TotalX_2 = ((servoTengahKanan_0 + PosX) + BodyCenterOffsetX_2) ;
   int DistBodyCenterFeet_2 = (sqrt((TotalY_2 *TotalY_2)  + (TotalX_2 *TotalX_2)));
   int AngleBodyCenterX_2 = (PI / 2 - atan2(TotalY_2, TotalY_2));
   int RollZ_2 = (tan(RotZ * PI / 180) * TotalX_2);
@@ -134,8 +134,8 @@ void BodyIk() {
   int BodyIKY_2 = ((sin(AngleBodyCenterX_2 + (RotY * PI / 180)) * DistBodyCenterFeet_2) - TotalY_2);
   int BodyIKZ_2 = (RollZ_2 + PitchZ_2);
 
-  int TotalY_3 = (servoBelakangKanan_1 + BodyCenterOffsetY_3 + PosY);
-  int TotalX_3 = (servoBelakangKanan_0 + BodyCenterOffsetX_3 + PosX);
+  int TotalY_3 = ((servoBelakangKanan_1 + BodyCenterOffsetY_3) + PosY);
+  int TotalX_3 = ((servoBelakangKanan_0 + BodyCenterOffsetX_3) + PosX);
   int DistBodyCenterFeet_3 = sqrt((TotalY_3 * TotalY_3) + (TotalX_3 * TotalX_3));
   int AngleBodyCenterX_3 = PI / 2 - atan2(TotalY_3, TotalX_3);
   int RollZ_3 = (tan(RotZ * PI / 180) * TotalY_3);
@@ -144,8 +144,8 @@ void BodyIk() {
   int BodyIKY_3 = ((sin(AngleBodyCenterX_3 + (RotY * PI / 180)) * DistBodyCenterFeet_3) - TotalY_3);
   int BodyIKZ_3 = (RollZ_3 + PitchZ_3);
 
-  int TotalY_4 = (servoBelakangKiri_1 + BodyCenterOffsetY_4 + PosY);
-  int TotalX_4 = (servoBelakangKiri_0 + BodyCenterOffsetX_4 + PosX);
+  int TotalY_4 = ((servoBelakangKiri_1 + BodyCenterOffsetY_4) + PosY);
+  int TotalX_4 = ((servoBelakangKiri_0 + BodyCenterOffsetX_4) + PosX);
   int DistBodyCenterFeet_4 = (sqrt(TotalY_4 * TotalY_4 + TotalX_4 *TotalX_4));
   int AngleBodyCenterX_4 = (PI / 2 - atan2(TotalY_4, TotalX_4));
   int RollZ_4 = (tan(RotZ * PI / 180) * TotalX_4);
@@ -154,8 +154,8 @@ void BodyIk() {
   int BodyIKY_4 = ((sin(AngleBodyCenterX_4 + (RotY * PI / 180)) * DistBodyCenterFeet_4) - TotalY_4);
   int BodyIKZ_4 = RollZ_4 + PitchZ_4;
 
-  int TotalY_5 = (servoTengahKiri_1 + BodyCenterOffsetY_5 + PosY);
-  int TotalX_5 = (servoTengahKanan_0 + BodyCenterOffsetX_5 + PosX);
+  int TotalY_5 = ((servoTengahKiri_1 + BodyCenterOffsetY_5) + PosY);
+  int TotalX_5 = ((servoTengahKanan_0 + BodyCenterOffsetX_5) + PosX);
   int DistBodyCenterFeet_5 = (sqrt(TotalY_5 * TotalY_5 + TotalX_5 * TotalX_5));
   int AngleBodyCenterX_5 = (PI / 2 - atan2(TotalY_5, TotalX_5));
   int RollZ_5 = (tan(RotZ * PI / 180) * TotalX_5);
@@ -164,8 +164,8 @@ void BodyIk() {
   int BodyIKY_5 = ((sin(AngleBodyCenterX_5 + (RotY * PI / 180)) * DistBodyCenterFeet_5) - TotalY_5);
   int BodyIKZ_5 = (RollZ_5 + PitchZ_5);
 
-  int TotalY_6 = servoDepanKiri_1 + BodyCenterOffsetY_6 + PosY;
-  int TotalX_6 = servoDepanKiri_0 + BodyCenterOffsetX_6 + PosX;
+  int TotalY_6 = (servoDepanKiri_1 + BodyCenterOffsetY_6) + PosY;
+  int TotalX_6 = (servoDepanKiri_0 + BodyCenterOffsetX_6) + PosX;
   int DistBodyCenterFeet_6 = sqrt(TotalY_6 ^ 2 + TotalX_6 ^ 2);
   int AngleBodyCenterX_6 = PI / 2 - atan2(TotalY_6, TotalX_6);
   int RollZ_6 = tan(RotZ * PI / 180) * TotalX_6;
@@ -179,9 +179,9 @@ void LegIK() {
   int BodyIKX_1, BodyIKZ_1, BodyIKY_1, BodyIKX_2, BodyIKY_2, BodyIKZ_2, BodyIKX_3, BodyIKY_3, BodyIKZ_3, BodyIKX_4, BodyIKY_4, BodyIKZ_4, BodyIKX_5, BodyIKY_5, BodyIKZ_5, BodyIKX_6, BodyIKY_6, BodyIKZ_6;
   
 
-  int NewPosX_1 = servoDepanKanan_0 + PosX + BodyIKX_1;
-  int NewPosZ_1 = servoDepanKanan_2 + PosZ + BodyIKZ_1;
-  int NewPosY_1 = servoDepanKanan_1 + PosY + BodyIKY_1;
+  int NewPosX_1 = (servoDepanKanan_0 + PosX) + BodyIKX_1;
+  int NewPosZ_1 = (servoDepanKanan_2 + PosZ) + BodyIKZ_1;
+  int NewPosY_1 = (servoDepanKanan_1 + PosY) + BodyIKY_1;
   int CoxaFeetDist_1 = sqrt(NewPosX_1 ^ 2 + NewPosY_1 ^ 2);
   int IKSW_1 = sqrt(((CoxaFeetDist_1 - CoxaLength) * (CoxaFeetDist_1 - CoxaLength)) + (NewPosZ_1 * NewPosZ_1));
   int IKA1_1 = atan((CoxaFeetDist_1 - CoxaLength) / NewPosZ_1);
@@ -191,9 +191,9 @@ void LegIK() {
   int IKFemurAngle_1 = (90 - ((IKA1_1 + IKA2_1) * 180 / PI));
   int IKCoxaAngle_1 = (90 - (atan2(NewPosY_1, NewPosX_1) * 180 / PI));
 
-  int NewPosX_2 = servoTengahKanan_0 + PosX + BodyIKX_2;
-  int NewPosZ_2 = servoTengahKanan_2 + PosZ + BodyIKZ_2;
-  int NewPosY_2 = servoTengahKanan_1 + PosY + BodyIKY_2;
+  int NewPosX_2 = (servoTengahKanan_0 + PosX) + BodyIKX_2;
+  int NewPosZ_2 = (servoTengahKanan_2 + PosZ) + BodyIKZ_2;
+  int NewPosY_2 = (servoTengahKanan_1 + PosY) + BodyIKY_2;
   int CoxaFeetDist_2 = sqrt((NewPosX_2 * NewPosX_2) + (NewPosY_2 * NewPosY_2));
   int IKSW_2 = sqrt(((CoxaFeetDist_2 - CoxaLength) * (CoxaFeetDist_2 - CoxaLength)) + (NewPosZ_2 * NewPosZ_2));
   int IKA1_2 = atan((CoxaFeetDist_2 - CoxaLength) / NewPosZ_2);
@@ -203,9 +203,9 @@ void LegIK() {
   int IKFemurAngle_2 = (90 - ((IKA1_2 + IKA2_2) * 180 / PI));
   int IKCoxaAngle_2 = (90 - (atan2(NewPosY_2, NewPosX_2)* 180 / PI));
 
-  int NewPosX_3 = (servoBelakangKanan_0 + PosX + BodyIKX_3);
-  int NewPosZ_3 = (servoBelakangKanan_2 + PosZ + BodyIKZ_3);
-  int NewPosY_3 = (servoBelakangKanan_1 + PosY + BodyIKY_3);
+  int NewPosX_3 = ((servoBelakangKanan_0 + PosX) + BodyIKX_3);
+  int NewPosZ_3 = ((servoBelakangKanan_2 + PosZ) + BodyIKZ_3);
+  int NewPosY_3 = ((servoBelakangKanan_1 + PosY) + BodyIKY_3);
   int CoxaFeetDist_3 = sqrt((NewPosX_3 * NewPosX_3) + (NewPosY_3 * NewPosY_3));
   int IKSW_3 = sqrt(((CoxaFeetDist_3 - CoxaLength) * (CoxaFeetDist_3 - CoxaLength)) + (NewPosZ_3 * NewPosZ_3));
   int IKA1_3 = atan((CoxaFeetDist_3 - CoxaLength) / NewPosZ_3);
@@ -215,9 +215,9 @@ void LegIK() {
   int IKFemurAngle_3 = (90 - ((IKA1_3 + IKA2_3)* 180 / PI)) ;
   int IKCoxaAngle_3 = (90 - (atan2(NewPosY_3, NewPosX_3) * 180 / PI));
 
-  int NewPosX_4 = servoBelakangKiri_0 + PosX + BodyIKX_4;
-  int NewPosZ_4 = servoBelakangKiri_2 + PosZ + BodyIKZ_4;
-  int NewPosY_4 = servoBelakangKiri_1 + PosY + BodyIKY_4;
+  int NewPosX_4 = (servoBelakangKiri_0 + PosX) + BodyIKX_4;
+  int NewPosZ_4 = (servoBelakangKiri_2 + PosZ) + BodyIKZ_4;
+  int NewPosY_4 = (servoBelakangKiri_1 + PosY) + BodyIKY_4;
   int CoxaFeetDist_4 = sqrt((NewPosX_4 * NewPosZ_4) + (NewPosY_4 NewPosY_4));
   int IKSW_4 = sqrt(((CoxaFeetDist_4 - CoxaLength) * (CoxaFeetDist_4 - CoxaLength)) + (NewPosZ_4 * NewPosZ_4));
   int IKA1_4 = atan((CoxaFeetDist_4 - CoxaLength) / NewPosZ_4);
@@ -227,21 +227,21 @@ void LegIK() {
   int IKFemurAngle_4 = (90 - ((IKA1_4 + IKA2_4) * 180 / PI));
   int IKCoxaAngle_4 = (90 - (atan2(NewPosY_4, NewPosX_4) * 180 / PI));
 
-  int NewPosX_5 = servoTengahKiri_0 + PosX + BodyIKX_5;
-  int NewPosZ_5 = servoTengahKiri_2 + PosZ + BodyIKZ_5;
-  int NewPosY_5 = servoTengahKiri_1 + PosY + BodyIKY_5;
+  int NewPosX_5 = (servoTengahKiri_0 + PosX) + BodyIKX_5;
+  int NewPosZ_5 = (servoTengahKiri_2 + PosZ) + BodyIKZ_5;
+  int NewPosY_5 = (servoTengahKiri_1 + PosY) + BodyIKY_5;
   int CoxaFeetDist_5 = sqrt((NewPosX_5 *NewPosX_5) + (NewPosY_5 * NewPosY_5));
   int IKSW_5 = sqrt(((CoxaFeetDist_5 - CoxaLength) *(CoxaFeetDist_5 - CoxaLength)) + (NewPosZ_5 *NewPosZ_5));
   int IKA1_5 = atan((CoxaFeetDist_5 - CoxaLength) / NewPosZ_5);
   int IKA2_5 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength)  - (IKSW_5 * IKSW_5)) / (-2 * IKSW_5 * FemurLength));
   int TAngle_5 = acos(((IKSW_5 * IKSW_5) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength)) / (-2 * FemurLength * TibiaLength));
   int IKTibiaAngle = (90 - (TAngle_5 * 180 / PI);
-  int IKFemurAngle_5 =() 90 - ((IKA1_5 + IKA2_5) * 180 / PI));
+  int IKFemurAngle_5 =( 90 - ((IKA1_5 + IKA2_5) * 180 / PI));
   int IKCoxaAngle_5 = (90 - (atan2(NewPosY_5, NewPosX_5) * 180 / PI));
 
-  int NewPosX_6 = servoDepanKiri_0 + PosX + BodyIKX_6;
-  int NewPosZ_6 = servoDepanKiri_2 + PosZ + BodyIKZ_6;
-  int NewPosY_6 = servoDepanKiri_1 + PosY + BodyIKY_6;
+  int NewPosX_6 = ((servoDepanKiri_0 + PosX) + BodyIKX_6);
+  int NewPosZ_6 = ((servoDepanKiri_2 + PosZ) + BodyIKZ_6);
+  int NewPosY_6 = ((servoDepanKiri_1 + PosY) + BodyIKY_6);
   int CoxaFeetDist_6 = sqrt((NewPosX_6 *NewPosX_^) + (NewPosY_6 * NewPosY_6));
   int IKSW_6 = sqrt(((CoxaFeetDist_6 - CoxaLength) * (CoxaFeetDist_6 - CoxaLength)) + (NewPosZ_6 * NewPosZ_6));
   int IKA1_6 = atan((CoxaFeetDist_6 - CoxaLength) / NewPosZ_6);
@@ -305,8 +305,8 @@ void setup() {
 }
 
 void loop() {
-    BodyIk()
-    LegIK()
-    ServoAngle()
+    BodyIk();
+    LegIK();
+    ServoAngle();
   // put your main code here, to run repeatedly:
 }
