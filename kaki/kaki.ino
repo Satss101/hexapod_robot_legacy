@@ -40,20 +40,20 @@ Servo servo5_1;
 Servo servo5_2;
 
 #define coxa 77  //30 //waktu dibagi dengan
-#define femur 49
-#define tibia 103
+#define femur 55
+#define tibia 104
 #define rate 4  // ketelitian langkah  //harus ganjil
 #define delayTanggaTama 10
-#define lebarLangkah 32    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
-#define tinggiLangkah 24   //tinggi langkah dibagi rate harus bulat
-#define delayKecepatan 30  //80
-#define lebarLangkahPivot 12
-#define Zoff 25
+#define lebarLangkah 60    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
+#define tinggiLangkah 80   //tinggi langkah dibagi rate harus bulat
+#define delayKecepatan 20  //80
+#define lebarLangkahPivot 400
+#define Zoff -10
 
 int inputBefore = 0;
 void syncLeg();
 
-float posisiAwal = ((coxa + femur) / 1.45);  //1.5
+float posisiAwal = ((coxa + femur) / 1);  //1.5
 float langkahDatar[20];
 float langkahNaik = (tinggiLangkah / rate);
 int jumlahPosisiKaki = ((rate * 2) + 1);  //terdapat pada void motion
@@ -136,8 +136,8 @@ void setup() {
 
   langkahDatar[0] = (lebarLangkah / (rate * 2));
 
-  langkahDatar[1] = (lebarLangkah / (rate * (1.2)));  //ke arah 1 kanan
-  langkahDatar[2] = (lebarLangkah / (rate * (1.2)));  //ke arah 1 kiri
+  langkahDatar[1] = (lebarLangkah / (rate * (1)));  //ke arah 1 kanan
+  langkahDatar[2] = (lebarLangkah / (rate * (1)));  //ke arah 1 kiri
 
   langkahDatar[5] = (lebarLangkah / (rate * (1.8)));  //ke arah 2 kanan
   langkahDatar[6] = (lebarLangkah / (rate * (1.2)));  //ke arah 2 kiri
@@ -195,12 +195,12 @@ void robot_movement() {
     // servo1_0.writeMicroseconds(gerakServo(sys[3].tet));
     // servo1_1.writeMicroseconds(gerakServo(sys[4].tet));
     // servo1_2.writeMicroseconds(gerakServo(sys[5].tet));
-    // servo2_0.writeMicroseconds(gerakServo(sys[6].tet));
-    // servo2_1.writeMicroseconds(gerakServo(sys[7].tet));
-    // servo2_2.writeMicroseconds(gerakServo(sys[8].tet));
-    servo3_0.writeMicroseconds(gerakServo(sys[9].tet));
-    servo3_1.writeMicroseconds(gerakServo(sys[10].tet));
-    servo3_2.writeMicroseconds(gerakServo(sys[11].tet));
+    servo2_0.writeMicroseconds(gerakServo(sys[6].tet));
+    servo2_1.writeMicroseconds(gerakServo(sys[7].tet));
+    servo2_2.writeMicroseconds(gerakServo(sys[8].tet));
+    // servo3_0.writeMicroseconds(gerakServo(sys[9].tet));
+    // servo3_1.writeMicroseconds(gerakServo(sys[10].tet));
+    // servo3_2.writeMicroseconds(gerakServo(sys[11].tet));
     // servo4_0.writeMicroseconds(gerakServo(sys[12].tet));
     // servo4_1.writeMicroseconds(gerakServo(sys[13].tet));
     // servo4_2.writeMicroseconds(gerakServo(sys[14].tet));
@@ -234,43 +234,56 @@ void syncWrite() {
 }
 
 void setServo(int idLeg, int sudut1, int sudut2, int sudut3) {
-  // if (idLeg == 0){
-  //   Serial.println("kaki depan");
-  //   Serial.println(sudut1);
-  //   Serial.println(sudut2);
-  //   Serial.println(sudut3);
-  // }
-  // if (idLeg == 4) {
-  //   Serial.println("kaki belakang");
-  //   Serial.println(sudut1);
-  //   Serial.println(sudut2);
-  //   Serial.println(sudut3);
-  // }
+  if (idLeg == 0) {
+    Serial.println("kaki belakang");
+    Serial.println(sudut1);
+    Serial.println(sudut2);
+    Serial.println(sudut3);
+  }
 
   if (idLeg == 0) {
-    angle[0] = putarKakiKananDepan + sudut1;
-    angle[1] = tinggiKakiKananDepan + sudut2;  //240
-    angle[2] = bukaanKakiKananDepan + sudut3;  //60
-  } else if (idLeg == 1) {
-    angle[3] = sudut1 + putarKakiKananTengah;
-    angle[4] = tinggiKakiKananTengah + sudut2;  //240
-    angle[5] = bukaanKakiKananTengah + sudut3;  //60
-  } else if (idLeg == 2) {
-    angle[6] = putarKakiKananBelakang + sudut1;
-    angle[7] = tinggiKakiKananBelakang + sudut2;  //60
-    angle[8] = bukaanKakiKananBelakang + sudut3;  //240
-  } else if (idLeg == 3) {
+    angle[0] = (90 - sudut1) + putarKakiKananDepan;
+    angle[1] = (90 - sudut2) + tinggiKakiKananDepan;  //240
+    angle[2] = (90 + sudut3) + bukaanKakiKananDepan;  //60
+  }
+  if (idLeg == 1) {
+    angle[3] = (90 - sudut1) + putarKakiKananTengah;
+    angle[4] = (90 - sudut1) + tinggiKakiKananTengah;  //240
+    angle[5] = (90 + sudut1) + bukaanKakiKananTengah;  //60
+  }
+  if (idLeg == 2) {
+    angle[6] = (90 - sudut1) + putarKakiKananBelakang;
+    angle[7] = (90 - sudut1) + tinggiKakiKananBelakang;  //60
+    angle[8] = (90 + sudut1) + bukaanKakiKananBelakang;  //240
+  }
+  if (idLeg == 3) {
     angle[9] = sudut1 + putarKakiKiriBelakang;
     angle[10] = tinggiKakiKiriBelakang + sudut2;  //60
     angle[11] = bukaanKakiKiriBelakang + sudut3;  //240
-  } else if (idLeg == 4) {
+  }
+  if (idLeg == 4) {
     angle[12] = (90 - sudut1) + putarKakiKiriTengah;
     angle[13] = tinggiKakiKiriTengah + sudut2;  //60
     angle[14] = bukaanKakiKiriTengah + sudut3;  //240
-  } else if (idLeg == 5) {
+  }
+  if (idLeg == 5) {
     angle[15] = sudut1 + putarKakiKiriDepan;
     angle[16] = tinggiKakiKiriDepan + sudut2;  //60
     angle[17] = bukaanKakiKiriDepan + sudut3;  //240
+  }
+
+  int leg = 0;
+  if (idLeg == leg) {
+    Serial.println("kaki depan");
+    Serial.println(angle[leg]);
+    Serial.println(angle[leg + 1]);
+    Serial.println(angle[leg + 2]);
+  }
+  if (idLeg == 2) {
+    Serial.println("kaki belakang");
+    Serial.println(angle[6]);
+    Serial.println(angle[6 + 1]);
+    Serial.println(angle[6 + 2]);
   }
 }
 
@@ -294,10 +307,8 @@ void inverse(int idLeg, float x, float y, float z) {
   float femur_2, tibia_2;
   int sudut1, sudut2, sudut3;
 
-  // x = x + 10;
-  // y = y + 50;
   z = Zoff - z;
-  degree1 = SpeedTrig.atan2(x, y);
+  degree1 = SpeedTrig.atan2(y, x);
   L1 = sqrt((x * x) + (y * y));  //akar x^2 + y^2
 
   Lcox = L1 - coxa;                   //coxa adalah 10
@@ -309,7 +320,7 @@ void inverse(int idLeg, float x, float y, float z) {
   degree2_1 = SpeedTrig.atan2(z, Lcox);
   temp2 = (((L_2 + femur_2) - tibia_2) / ((2 * femur) * L));
   degree2_2 = SpeedTrig.acos(temp2);
-  degree2_1 = degree2_1 * -1;
+  // degree2_1 = degree2_1 * -1;
   degree2 = degree2_2 + degree2_1;
 
   temp3 = (((femur_2 + tibia_2) - L_2) / ((2 * femur) * tibia));
@@ -319,24 +330,24 @@ void inverse(int idLeg, float x, float y, float z) {
   sudut2 = float2int(rad2deg(degree2));
   sudut3 = float2int(rad2deg(degree3));
 
+  sudut3 = sudut3 - 90;
   // sudut2 = sudut2 - 90;
-  // sudut3 = sudut3 - 90;
 
-  sudut2 = 90 - sudut2;
-  sudut3 = 90 - sudut3;
+  // sudut2 = 90 - sudut2;
+  // sudut3 = 90 - sudut3;
 
-  if (sudut1 < 0) {
-    // sudut3 = 180 + sudut3;
-    sudut1 = -1 * sudut1;
-  }
-  if (sudut2 < 0) {
-    // sudut2 = 180 + sudut2;
-    sudut2 = -1 * sudut2;
-  }
-  if (sudut3 < 0) {
-    // sudut3 = 180 + sudut3;
-    sudut3 = -1 * sudut3;
-  }
+  // if (sudut1 < 0) {
+  //   // sudut3 = 180 + sudut3;
+  //   sudut1 = -1 * sudut1;
+  // }
+  // if (sudut2 < 0) {
+  //   // sudut2 = 180 + sudut2;
+  //   sudut2 = -1 * sudut2;
+  // }
+  // if (sudut3 < 0) {
+  //   // sudut3 = 180 + sudut3;
+  //   sudut3 = -1 * sudut3;
+  // }
 
   // Serial.println("sudut :");
   // Serial.println(sudut1);
@@ -546,27 +557,27 @@ void directions(int kananD, int kananT, int kananB, int kiriB, int kiriT, int ki
     indexKiri = 8;
   }
 
-  Serial.println(ubahGerak);
-  if (ubahGerak == 0) {
-    // setKaki();
-    // syncLeg();
-    while (leg[kananD].posisi != 1) {
-      leg[kananD].motion = 1;
-      motion(kananD, indexKanan);
-      syncLeg();
-    }
-    while (leg[kananB].posisi != rate4)  //((rate*4)+1))
-    {
-      leg[kananB].motion = 1;
-      motion(kananB, indexKanan);
-      syncLeg();
-    }
-    ubahGerak = 1;
-  }
+  // Serial.println(ubahGerak);
+  // if (ubahGerak == 0) {
+  //   // setKaki();
+  //   // syncLeg();
+  //   while (leg[kananD].posisi != 1) {
+  //     leg[kananD].motion = 1;
+  //     motion(kananD, indexKanan);
+  //     syncLeg();
+  //   }
+  //   while (leg[kananB].posisi != rate4)  //((rate*4)+1))
+  //   {
+  //     leg[kananB].motion = 1;
+  //     motion(kananB, indexKanan);
+  //     syncLeg();
+  //   }
+  //   ubahGerak = 1;
+  // }
 
-  leg[kananD].motion = 0;
-  leg[kananT].motion = 1;
-  leg[kananB].motion = 0;
+  leg[kananD].motion = 1;
+  leg[kananT].motion = 0;
+  leg[kananB].motion = 1;
   leg[kiriB].motion = 1;
   leg[kiriT].motion = 0;
   leg[kiriD].motion = 1;
@@ -772,8 +783,7 @@ void setKaki() {
   bukaanKakiKiriDepan = 10;
 }
 
-void cekPerintah(int input) {
-  int ubahGerak = 1;
+void cekPerintah(int input, int ubahGerak) {
   if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
     if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
     {
@@ -815,11 +825,11 @@ void cekPerintah(int input) {
 }
 
 void pasangKaki() {
-  servo0_0.writeMicroseconds(gerakServo(0));
+  servo0_0.writeMicroseconds(gerakServo(90));
   servo0_1.writeMicroseconds(gerakServo(0));
-  servo0_2.writeMicroseconds(gerakServo(90 + 10));
+  servo0_2.writeMicroseconds(gerakServo(90));
 
-  servo1_0.writeMicroseconds(gerakServo(45));
+  servo1_0.writeMicroseconds(gerakServo(90));
   servo1_1.writeMicroseconds(gerakServo(0));
   servo1_2.writeMicroseconds(gerakServo(90));
 
@@ -835,14 +845,14 @@ void pasangKaki() {
   servo4_1.writeMicroseconds(gerakServo(0));
   servo4_2.writeMicroseconds(gerakServo(90));
 
-  servo5_0.writeMicroseconds(gerakServo(100 + 3));
-  servo5_1.writeMicroseconds(gerakServo(20));  //0
+  servo5_0.writeMicroseconds(gerakServo(90));
+  servo5_1.writeMicroseconds(gerakServo(180));  //0
   servo5_2.writeMicroseconds(gerakServo(90));
 }
 
 void diam() {
-  int ata = 45;   //semakin kecil semakin
-  int ten = 60;   //semakin kecil semakin
+  int ata = 45;  //semakin kecil semakin
+  int ten = 60;  //semakin kecil semakin
   int baw = 90;  //semakin kecil semakin ketutup
   servo0_0.writeMicroseconds(gerakServo(ata));
   servo0_1.writeMicroseconds(gerakServo(ten));
@@ -850,29 +860,30 @@ void diam() {
   servo1_0.writeMicroseconds(gerakServo(ata));
   servo1_1.writeMicroseconds(gerakServo(ten));
   servo1_2.writeMicroseconds(gerakServo(baw));
-  servo2_0.writeMicroseconds(gerakServo(ata));
-  servo2_1.writeMicroseconds(gerakServo(ten));
-  servo2_2.writeMicroseconds(gerakServo(baw + 5));
+  // servo2_0.writeMicroseconds(gerakServo(ata));
+  // servo2_1.writeMicroseconds(gerakServo(ten));
+  // servo2_2.writeMicroseconds(gerakServo(baw + 5));
   servo3_0.writeMicroseconds(gerakServo(ata));
   servo3_1.writeMicroseconds(gerakServo(ten));
   servo3_2.writeMicroseconds(gerakServo(baw));
   servo4_0.writeMicroseconds(gerakServo(ata - 5));
   servo4_1.writeMicroseconds(gerakServo(ten));
   servo4_2.writeMicroseconds(gerakServo(baw));
-  servo5_0.writeMicroseconds(gerakServo(ata + 3));
-  servo5_1.writeMicroseconds(gerakServo(ten));
+  servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
+  servo5_1.writeMicroseconds(gerakServo(70 + ten));
   servo5_2.writeMicroseconds(gerakServo(baw));
 }
 
+int input = 1;
+int ubahGerak = 1;
 void loop() {
-  int input = 0;
   // inverse(3,,5,4,5);
   // pasangKaki();
-  cekPerintah(input);
+  cekPerintah(input, ubahGerak);
   // Serial.println("degree2_1");
   // delay(800);
   // Serial.println(posisiAwal);
-  // diam();
+  diam();
   // for (int i = 30; i <= 900; i++) {
   // diam();
   //   int id = 0;
