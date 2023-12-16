@@ -99,9 +99,11 @@ struct leg {
 } leg[6];
 
 void inisialisasiAwal() {
+  leg[0].posisiY = posisiAwal;
+  leg[1].posisiY = 0;
+  leg[2].posisiY = posisiAwal * -1;
   for (int a = 0; a < 6; a++) {
     leg[a].posisiX = posisiAwal;
-    leg[a].posisiY = posisiAwal;
     leg[a].posisiZ = 0;
     leg[a].posisi = jumlahPosisiKaki;
     leg[a].gerakan = 1;
