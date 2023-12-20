@@ -3,24 +3,30 @@ rate1 = (rate + 1);
 rate2 = ((rate * 2) + 1);
 rate3 = ((rate * 3) + 1);
 rate4 = ((rate * 4) + 1);
-coxa = 77;  %30 
+coxa = 77;  %30
 femur = 49;
-posisiAwal = ((coxa + femur) / 1.8);  %1.5
+posisiAwal = ((coxa + femur) / 1);  %1.5
+
+%-----------------ubah disini-----------------
+Zoff = -45;
+posisiX = posisiAwal;
+%posisiY = posisiAwal;
+posisiY = 0;
+posisiZ = Zoff - 20;
+lebarLangkah = 60;  %lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
+tinggiLangkah = 80;
+%----------------------------------------------
+
 jumlahPosisiKaki = ((rate * 2) + 1);
 posisi = jumlahPosisiKaki;
-lebarLangkah = 32;  %lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
-tinggiLangkah = 32;
 gerakan = 1;
-posisiX = posisiAwal;
-posisiY = posisiAwal;
-posisiZ = 0;
 langkahDatar = lebarLangkah / (rate * 2);
 langkahNaik = (tinggiLangkah / rate);
 x = zeros(1, 50);
 y = zeros(1, 50);
 z = zeros(1, 50);
 
-for i = 1: 1: 50 
+for i = 1: 1: 50
     if gerakan == 0  %gerak segitiga
        if posisi < rate1  %(rate+1))
          posisiY = posisiY + langkahDatar;
