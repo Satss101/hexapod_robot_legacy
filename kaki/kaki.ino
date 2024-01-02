@@ -113,7 +113,51 @@ void inisialisasiAwal() {
   }
 }
 
-void setKaki();
+void setKaki() {
+  if (inputBefore != 0) {
+    putarKakiKananDepan = -15;     //kurang ke kepan
+    putarKakiKananTengah = 18;     // tambah ke depan
+    putarKakiKananBelakang = -15;  //dikurang semakin kedepan
+    putarKakiKiriBelakang = 15;
+    putarKakiKiriTengah = 20;  // tambah ke depan
+    putarKakiKiriDepan = -15;  // tambah ke depan
+
+    tinggiKakiKiriTengah = 20;
+  }
+  //tambah nilai tambah buka
+  tinggiKakiKananDepan = 0;  //tambah jadi naik
+  tinggiKakiKananTengah = 0;
+  tinggiKakiKananBelakang = 0;
+  tinggiKakiKiriBelakang = 0;
+  tinggiKakiKiriDepan = 0;
+
+  //tambah nilai tambah buka
+  bukaanKakiKananDepan = 15;
+  bukaanKakiKananTengah = 15;
+  bukaanKakiKananBelakang = 15;
+  //kurang nilai tambah buka
+  bukaanKakiKiriBelakang = -15;
+  bukaanKakiKiriTengah = -15;
+  bukaanKakiKiriDepan = -15;
+}
+
+void setGerak(){
+  langkahDatar[0] = (lebarLangkah / (rate * 2));
+
+  langkahDatar[1] = (lebarLangkah / (rate * (1.5)));  //ke arah 1 kanan
+  langkahDatar[2] = (lebarLangkah / (rate * (1)));  //ke arah 1 kiri
+
+  langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
+  langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
+
+  langkahDatar[7] = (lebarLangkah / (rate * (1.3)));  //ke arah 3 kanan
+  langkahDatar[8] = (lebarLangkah / (rate * (1.5)));  //ke arah 3 kiri
+
+  langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
+  langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
+
+  langkahDatar[17] = (lebarLangkahPivot / (rate * (2.8)));  //pivot Api
+}
 
 void setup() {
   servo0_0.attach(servoDepanKanan_0);
@@ -137,22 +181,7 @@ void setup() {
 
   setKaki();
   Serial.begin(9600);
-
-  langkahDatar[0] = (lebarLangkah / (rate * 2));
-
-  langkahDatar[1] = (lebarLangkah / (rate * (1.5)));  //ke arah 1 kanan
-  langkahDatar[2] = (lebarLangkah / (rate * (1)));  //ke arah 1 kiri
-
-  langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
-  langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
-
-  langkahDatar[7] = (lebarLangkah / (rate * (1.3)));  //ke arah 3 kanan
-  langkahDatar[8] = (lebarLangkah / (rate * (1.5)));  //ke arah 3 kiri
-
-  langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
-  langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
-
-  langkahDatar[17] = (lebarLangkahPivot / (rate * (2.8)));  //pivot Api
+  setGerak();
   inisialisasiAwal();
   syncLeg();
 }
@@ -160,11 +189,6 @@ void setup() {
 long rad2deg(float rad) {
   return ((int)(rad * 57.29577957855));
 }
-
-// int convert(int deg) {
-//   int zz = map(deg, 0, 300, 0, 1024);  //((int)(deg*(1024/300)));
-//   return zz;
-// }
 
 float gerakServo(float nilai) {
   return map(nilai, 0, 180, 700, 1950);
@@ -177,7 +201,7 @@ int float2int(float input) {
   else return temp + 1;
 }
 
-void robot_movement() {
+void syncWrite() {
   for (int ang = 0; ang < 18; ang++) {
     sys[ang].prev_teta = sys[ang].teta;
     sys[ang].teta = angle[ang];
@@ -214,28 +238,6 @@ void robot_movement() {
     servo5_2.writeMicroseconds(gerakServo(sys[17].tet));
     delay(delayKecepatan);
   }
-}
-
-void syncWrite() {
-  // servo0_0.writeMicroseconds(gerakServo(angle[0]));
-  // servo0_1.writeMicroseconds(gerakServo(angle[1]));
-  // servo0_2.writeMicroseconds(gerakServo(angle[2]));
-  // servo1_0.writeMicroseconds(gerakServo(angle[3]));
-  // servo1_1.writeMicroseconds(gerakServo(angle[4]));
-  // servo1_2.writeMicroseconds(gerakServo(angle[5]));
-  // servo2_0.writeMicroseconds(gerakServo(angle[6]));
-  // servo2_1.writeMicroseconds(gerakServo(angle[7]));
-  // servo2_2.writeMicroseconds(gerakServo(angle[8]));
-  // servo3_0.writeMicroseconds(gerakServo(angle[9]));
-  // servo3_1.writeMicroseconds(gerakServo(angle[10]));
-  // servo3_2.writeMicroseconds(gerakServo(angle[11]));
-  // servo4_0.writeMicroseconds(gerakServo(angle[12]));
-  // servo4_1.writeMicroseconds(gerakServo(angle[13]));
-  // servo4_2.writeMicroseconds(gerakServo(angle[14]));
-  // servo5_0.writeMicroseconds(gerakServo(angle[15]));
-  // servo5_1.writeMicroseconds(gerakServo(angle[16]));
-  // servo5_2.writeMicroseconds(gerakServo(angle[17]));
-  delay(delayKecepatan);
 }
 
 void setServo(int idLeg, int sudut1, int sudut2, int sudut3) {
@@ -288,8 +290,7 @@ void syncLeg() {
   setServo(3, leg[3].sudutDalam, leg[3].sudutTengah, leg[3].sudutLuar);
   setServo(4, leg[4].sudutDalam, leg[4].sudutTengah, leg[4].sudutLuar);
   setServo(5, leg[5].sudutDalam, leg[5].sudutTengah, leg[5].sudutLuar);
-  robot_movement();
-  // syncWrite();
+  syncWrite();
 }
 
 void inverse(int idLeg, float x, float y, float z) {
@@ -913,34 +914,6 @@ void tuningTangga() {
 
     hitungTangga++;
   }
-}
-
-void setKaki() {
-  if (inputBefore != 0) {
-    putarKakiKananDepan = -15;     //kurang ke kepan
-    putarKakiKananTengah = 18;     // tambah ke depan
-    putarKakiKananBelakang = -15;  //dikurang semakin kedepan
-    putarKakiKiriBelakang = 15;
-    putarKakiKiriTengah = 20;  // tambah ke depan
-    putarKakiKiriDepan = -15;  // tambah ke depan
-
-    tinggiKakiKiriTengah = 20;
-  }
-  //tambah nilai tambah buka
-  tinggiKakiKananDepan = 0;  //tambah jadi naik
-  tinggiKakiKananTengah = 0;
-  tinggiKakiKananBelakang = 0;
-  tinggiKakiKiriBelakang = 0;
-  tinggiKakiKiriDepan = 0;
-
-  //tambah nilai tambah buka
-  bukaanKakiKananDepan = 15;
-  bukaanKakiKananTengah = 15;
-  bukaanKakiKananBelakang = 15;
-  //kurang nilai tambah buka
-  bukaanKakiKiriBelakang = -15;
-  bukaanKakiKiriTengah = -15;
-  bukaanKakiKiriDepan = -15;
 }
 
 void cekPerintah(int input, int ubahGerak) {
