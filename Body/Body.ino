@@ -86,11 +86,17 @@ int servoDepanKiri_0;
 int servoDepanKiri_1;
 int servoDepanKiri_2;
 
+int sys[18];
+
+float gerakServo(float nilai) {
+  return map(nilai, 0, 180, 700, 1950);
+}
+
 void InitialLeg() {
-  Serial.begin(1000000);
-  servoDepanKanan_0 = (cos((60 / 180) * PI) * (CoxaLength + FemurLength));
-  servoDepanKanan_2 = TibiaLength;
-  servoDepanKanan_1 = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[0] = (cos((60 / 180) * PI) * (CoxaLength + FemurLength));
+  sys[1] = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[2] = TibiaLength;
+  
   servoTengahKanan_0 = (CoxaLength + FemurLength);
   servoTengahKanan_2 = TibiaLength;
   servoTengahKanan_1 = 0;
@@ -105,14 +111,34 @@ void InitialLeg() {
   servoTengahKiri_1 = 0;
   servoDepanKiri_0 = ((-cos(60 / 180 * PI) * CoxaLength) + FemurLength);
   servoDepanKiri_2 = TibiaLength;
-  servoDepanKiri_1 =(sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+  servoDepanKiri_1 = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+}
+
+void syncWrite() {
+  servo0_0.writeMicroseconds(gerakServo(servoDepanKanan_0));
+  servo0_1.writeMicroseconds(gerakServo(servoDepanKanan_1));
+  servo0_2.writeMicroseconds(gerakServo(servoDepanKanan_2));
+  servo1_0.writeMicroseconds(gerakServo(servoTengahKanan_0));
+  servo1_1.writeMicroseconds(gerakServo(servoTengahKanan_1));
+  servo1_2.writeMicroseconds(gerakServo(servoTengahKanan_2));
+  servo2_0.writeMicroseconds(gerakServo(servoBelakangKanan_0));
+  servo2_1.writeMicroseconds(gerakServo(servoBelakangKanan_1));
+  servo2_2.writeMicroseconds(gerakServo(servoBelakangKanan_2));
+
+  servo3_0.writeMicroseconds(gerakServo(servoBelakangKiri_0));
+  servo3_1.writeMicroseconds(gerakServo(servoBelakangKiri_1));
+  servo3_2.writeMicroseconds(gerakServo(servoBelakangKiri_2));
+  servo4_0.writeMicroseconds(gerakServo(servoTengahKiri_0));
+  servo4_1.writeMicroseconds(gerakServo(servoTengahKiri_1));
+  servo4_2.writeMicroseconds(gerakServo(servoTengahKiri_2));
+  servo5_0.writeMicroseconds(gerakServo(servoDepanKiri_0));
+  servo5_1.writeMicroseconds(gerakServo(servoDepanKiri_1));
+  servo5_2.writeMicroseconds(gerakServo(servoDepanKiri_2));
 }
 
 void BodyIk() {
 
   int FeetPosY, FeetPosX_4, FeetPosY_5, FeetPosX_5, FeetPosY_6, BodyCenterOffsetY_6, FeetPosX_6, BodyCenterOffsetX_6;
-
-
 
   int TotalY_1 = ((servoDepanKanan_1 + BodyCenterOffsetY_1) + PosY);
   int TotalX_1 = ((servoDepanKanan_0 + BodyCenterOffsetX_1) + PosX);
@@ -124,9 +150,9 @@ void BodyIk() {
   int BodyIKY_1 = ((sin(AngleBodyCenterX_1 + (RotY * PI / 180)) * DistBodyCenterFeet_1) - TotalY_1);
   int BodyIKZ_1 = (RollZ_1 + PitchZ_1);
 
-  int TotalY_2 = ((servoTengahKanan_1 + BodyCenterOffsetY_2) + PosY) ;
-  int TotalX_2 = ((servoTengahKanan_0 + PosX) + BodyCenterOffsetX_2) ;
-  int DistBodyCenterFeet_2 = (sqrt((TotalY_2 *TotalY_2)  + (TotalX_2 *TotalX_2)));
+  int TotalY_2 = ((servoTengahKanan_1 + BodyCenterOffsetY_2) + PosY);
+  int TotalX_2 = ((servoTengahKanan_0 + PosX) + BodyCenterOffsetX_2);
+  int DistBodyCenterFeet_2 = (sqrt((TotalY_2 * TotalY_2) + (TotalX_2 * TotalX_2)));
   int AngleBodyCenterX_2 = (PI / 2 - atan2(TotalY_2, TotalY_2));
   int RollZ_2 = (tan(RotZ * PI / 180) * TotalX_2);
   int PitchZ_2 = (tan(RotX * PI / 180) * TotalY_2);
@@ -140,13 +166,13 @@ void BodyIk() {
   int AngleBodyCenterX_3 = PI / 2 - atan2(TotalY_3, TotalX_3);
   int RollZ_3 = (tan(RotZ * PI / 180) * TotalY_3);
   int PitchZ_3 = (tan(RotX * PI / 180) * TotalY_3);
-  int BodyIKX_3 = ((cos(AngleBodyCenterX_3 + (RotY * PI / 180)) * DistBodyCenterFeet_3) - TotalX_3) ; //udah mas 
+  int BodyIKX_3 = ((cos(AngleBodyCenterX_3 + (RotY * PI / 180)) * DistBodyCenterFeet_3) - TotalX_3);  //udah mas
   int BodyIKY_3 = ((sin(AngleBodyCenterX_3 + (RotY * PI / 180)) * DistBodyCenterFeet_3) - TotalY_3);
   int BodyIKZ_3 = (RollZ_3 + PitchZ_3);
 
   int TotalY_4 = ((servoBelakangKiri_1 + BodyCenterOffsetY_4) + PosY);
   int TotalX_4 = ((servoBelakangKiri_0 + BodyCenterOffsetX_4) + PosX);
-  int DistBodyCenterFeet_4 = (sqrt(TotalY_4 * TotalY_4 + TotalX_4 *TotalX_4));
+  int DistBodyCenterFeet_4 = (sqrt(TotalY_4 * TotalY_4 + TotalX_4 * TotalX_4));
   int AngleBodyCenterX_4 = (PI / 2 - atan2(TotalY_4, TotalX_4));
   int RollZ_4 = (tan(RotZ * PI / 180) * TotalX_4);
   int PitchZ_4 = (tan(RotX * PI / 180) * TotalY_4);
@@ -175,9 +201,7 @@ void BodyIk() {
 }
 
 void LegIK() {
-
   int BodyIKX_1, BodyIKZ_1, BodyIKY_1, BodyIKX_2, BodyIKY_2, BodyIKZ_2, BodyIKX_3, BodyIKY_3, BodyIKZ_3, BodyIKX_4, BodyIKY_4, BodyIKZ_4, BodyIKX_5, BodyIKY_5, BodyIKZ_5, BodyIKX_6, BodyIKY_6, BodyIKZ_6;
-  
 
   int NewPosX_1 = (servoDepanKanan_0 + PosX) + BodyIKX_1;
   int NewPosZ_1 = (servoDepanKanan_2 + PosZ) + BodyIKZ_1;
@@ -185,7 +209,7 @@ void LegIK() {
   int CoxaFeetDist_1 = sqrt(NewPosX_1 ^ 2 + NewPosY_1 ^ 2);
   int IKSW_1 = sqrt(((CoxaFeetDist_1 - CoxaLength) * (CoxaFeetDist_1 - CoxaLength)) + (NewPosZ_1 * NewPosZ_1));
   int IKA1_1 = atan((CoxaFeetDist_1 - CoxaLength) / NewPosZ_1);
-  int IKA2_1 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength)  - (IKSW_1 * IKSW_1)) / (-2 * IKSW_1 * FemurLength));
+  int IKA2_1 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_1 * IKSW_1)) / (-2 * IKSW_1 * FemurLength));
   int TAngle_1 = acos((IKSW_1 * IKSW_1) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength) / (-2 * FemurLength * TibiaLength));
   int IKTibiaAngle_1 = (90 - (TAngle_1 * 180 / PI));
   int IKFemurAngle_1 = (90 - ((IKA1_1 + IKA2_1) * 180 / PI));
@@ -197,11 +221,11 @@ void LegIK() {
   int CoxaFeetDist_2 = sqrt((NewPosX_2 * NewPosX_2) + (NewPosY_2 * NewPosY_2));
   int IKSW_2 = sqrt(((CoxaFeetDist_2 - CoxaLength) * (CoxaFeetDist_2 - CoxaLength)) + (NewPosZ_2 * NewPosZ_2));
   int IKA1_2 = atan((CoxaFeetDist_2 - CoxaLength) / NewPosZ_2);
-  int IKA2_2 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength ) - (IKSW_2 * IKSW_2)) / (-2 * IKSW_2 * FemurLength));
+  int IKA2_2 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_2 * IKSW_2)) / (-2 * IKSW_2 * FemurLength));
   int TAngle_2 = acos(((IKSW_2 * IKSW_2) - (TibiaLength * TibiaLength)) / (-2 * FemurLength * TibiaLength));
   int IKTibiaAngle_2 = (90 - (TAngle_2 * 180 / PI));
   int IKFemurAngle_2 = (90 - ((IKA1_2 + IKA2_2) * 180 / PI));
-  int IKCoxaAngle_2 = (90 - (atan2(NewPosY_2, NewPosX_2)* 180 / PI));
+  int IKCoxaAngle_2 = (90 - (atan2(NewPosY_2, NewPosX_2) * 180 / PI));
 
   int NewPosX_3 = ((servoBelakangKanan_0 + PosX) + BodyIKX_3);
   int NewPosZ_3 = ((servoBelakangKanan_2 + PosZ) + BodyIKZ_3);
@@ -210,9 +234,9 @@ void LegIK() {
   int IKSW_3 = sqrt(((CoxaFeetDist_3 - CoxaLength) * (CoxaFeetDist_3 - CoxaLength)) + (NewPosZ_3 * NewPosZ_3));
   int IKA1_3 = atan((CoxaFeetDist_3 - CoxaLength) / NewPosZ_3);
   int IKA2_3 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_3 * IKSW_3)) / (-2 * IKSW_3 * FemurLength));
-  int TAngle_3 = acos(((IKSW_3 *IKSW_3) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength)) / (-2 * FemurLength * TibiaLength));
-  int IKTibiaAngle_3 =( 90 - (TAngle_3 * 180 / PI));
-  int IKFemurAngle_3 = (90 - ((IKA1_3 + IKA2_3)* 180 / PI)) ;
+  int TAngle_3 = acos(((IKSW_3 * IKSW_3) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength)) / (-2 * FemurLength * TibiaLength));
+  int IKTibiaAngle_3 = (90 - (TAngle_3 * 180 / PI));
+  int IKFemurAngle_3 = (90 - ((IKA1_3 + IKA2_3) * 180 / PI));
   int IKCoxaAngle_3 = (90 - (atan2(NewPosY_3, NewPosX_3) * 180 / PI));
 
   int NewPosX_4 = (servoBelakangKiri_0 + PosX) + BodyIKX_4;
@@ -221,21 +245,21 @@ void LegIK() {
   int CoxaFeetDist_4 = sqrt((NewPosX_4 * NewPosZ_4) + (NewPosY_4 * NewPosY_4));
   int IKSW_4 = sqrt(((CoxaFeetDist_4 - CoxaLength) * (CoxaFeetDist_4 - CoxaLength)) + (NewPosZ_4 * NewPosZ_4));
   int IKA1_4 = atan((CoxaFeetDist_4 - CoxaLength) / NewPosZ_4);
-  int IKA2_4 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength)  - (IKSW_4 *IKSW_4)) / (-2 * IKSW_4 * FemurLength));
+  int IKA2_4 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_4 * IKSW_4)) / (-2 * IKSW_4 * FemurLength));
   int TAngle_4 = acos(((IKSW_4 * IKSW_4) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength)) / (-2 * FemurLength * TibiaLength));
-  int IKTibiaAngle_4 =( 90 - (TAngle_4 * 180 / PI));
+  int IKTibiaAngle_4 = (90 - (TAngle_4 * 180 / PI));
   int IKFemurAngle_4 = (90 - ((IKA1_4 + IKA2_4) * 180 / PI));
   int IKCoxaAngle_4 = (90 - (atan2(NewPosY_4, NewPosX_4) * 180 / PI));
 
   int NewPosX_5 = (servoTengahKiri_0 + PosX) + BodyIKX_5;
   int NewPosZ_5 = (servoTengahKiri_2 + PosZ) + BodyIKZ_5;
   int NewPosY_5 = (servoTengahKiri_1 + PosY) + BodyIKY_5;
-  int CoxaFeetDist_5 = sqrt((NewPosX_5 *NewPosX_5) + (NewPosY_5 * NewPosY_5));
-  int IKSW_5 = sqrt(((CoxaFeetDist_5 - CoxaLength) *(CoxaFeetDist_5 - CoxaLength)) + (NewPosZ_5 *NewPosZ_5));
+  int CoxaFeetDist_5 = sqrt((NewPosX_5 * NewPosX_5) + (NewPosY_5 * NewPosY_5));
+  int IKSW_5 = sqrt(((CoxaFeetDist_5 - CoxaLength) * (CoxaFeetDist_5 - CoxaLength)) + (NewPosZ_5 * NewPosZ_5));
   int IKA1_5 = atan((CoxaFeetDist_5 - CoxaLength) / NewPosZ_5);
-  int IKA2_5 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength)  - (IKSW_5 * IKSW_5)) / (-2 * IKSW_5 * FemurLength));
+  int IKA2_5 = acos(((TibiaLength * TibiaLength) - (FemurLength * FemurLength) - (IKSW_5 * IKSW_5)) / (-2 * IKSW_5 * FemurLength));
   int TAngle_5 = acos(((IKSW_5 * IKSW_5) - (TibiaLength * TibiaLength) - (FemurLength * FemurLength)) / (-2 * FemurLength * TibiaLength));
-  int IKTibiaAngle = (90 - (TAngle_5 * 180 / PI);
+  int IKTibiaAngle = (90 - (TAngle_5 * 180 / PI));
   int IKFemurAngle_5 =( 90 - ((IKA1_5 + IKA2_5) * 180 / PI));
   int IKCoxaAngle_5 = (90 - (atan2(NewPosY_5, NewPosX_5) * 180 / PI));
 
@@ -278,12 +302,11 @@ void ServoAngle() {
   float CoxaAngle_6 = IKCoxaAngle_6 - 120;
   float FemurAngle_6 = IKFemurAngle_6;
   float TibiaAngle_6 = IKTibiaAngle_6;
-
-
 }
 
 
 void setup() {
+  Serial.begin(1000000);
   servo0_0.attach(servoDepanKanan_0);
   servo0_1.attach(servoDepanKanan_1);
   servo0_2.attach(servoDepanKanan_2);
@@ -305,8 +328,6 @@ void setup() {
 }
 
 void loop() {
-    BodyIk();
-    LegIK();
-    ServoAngle();
-  // put your main code here, to run repeatedly:
+  InitialLeg();
+  syncWrite();
 }
