@@ -67,26 +67,9 @@ Servo servo5_2;
 #define BodyCenterOffsetY_4 0
 #define BodyCenterOffsetY_5 70
 
-int servoDepanKanan_0;
-int servoDepanKanan_1;
-int servoDepanKanan_2;
-int servoTengahKanan_0;
-int servoTengahKanan_1;
-int servoTengahKanan_2;
-int servoBelakangKanan_0;
-int servoBelakangKanan_1;
-int servoBelakangKanan_2;
-int servoBelakangKiri_0;
-int servoBelakangKiri_1;
-int servoBelakangKiri_2;
-int servoTengahKiri_0;
-int servoTengahKiri_1;
-int servoTengahKiri_2;
-int servoDepanKiri_0;
-int servoDepanKiri_1;
-int servoDepanKiri_2;
 
-int sys[18];
+
+int sys[17];
 
 float gerakServo(float nilai) {
   return map(nilai, 0, 180, 700, 1950);
@@ -97,21 +80,26 @@ void InitialLeg() {
   sys[1] = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
   sys[2] = TibiaLength;
   
-  servoTengahKanan_0 = (CoxaLength + FemurLength);
-  servoTengahKanan_2 = TibiaLength;
-  servoTengahKanan_1 = 0;
-  servoBelakangKanan_0 = (cos(60 / 180 * PI) * (CoxaLength + FemurLength));
-  servoBelakangKanan_2 = TibiaLength;
-  servoBelakangKanan_1 = (sin(-60 / 180 * PI) * (CoxaLength + FemurLength));
-  servoBelakangKiri_0 = (-cos(60 / 180 * PI) * (CoxaLength + FemurLength));
-  servoBelakangKiri_2 = TibiaLength;
-  servoBelakangKiri_1 = (sin(-60 / 180 * PI) * (CoxaLength + FemurLength));
-  servoTengahKiri_0 = -(CoxaLength + TibiaLength);
-  servoTengahKiri_2 = TibiaLength;
-  servoTengahKiri_1 = 0;
-  servoDepanKiri_0 = ((-cos(60 / 180 * PI) * CoxaLength) + FemurLength);
-  servoDepanKiri_2 = TibiaLength;
-  servoDepanKiri_1 = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[3] = (CoxaLength + FemurLength);
+  sys[4] = 0;
+  sys[5] = TibiaLength;
+  
+  sys[6] = (cos(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[7] = (sin(-60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[8] = TibiaLength;
+  
+  sys[9] = (-cos(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[10] = (sin(-60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[11] = TibiaLength;
+  
+  sys[12] = -(CoxaLength + TibiaLength);
+  sys[13] = 0;
+  sys[14] = TibiaLength;
+  
+  sys[15] = ((-cos(60 / 180 * PI) * CoxaLength) + FemurLength);
+  sys[16] = (sin(60 / 180 * PI) * (CoxaLength + FemurLength));
+  sys[17] = TibiaLength;
+  
 }
 
 void syncWrite() {
