@@ -103,25 +103,25 @@ void InitialLeg() {
 }
 
 void syncWrite() {
-  servo0_0.writeMicroseconds(gerakServo(servoDepanKanan_0));
-  servo0_1.writeMicroseconds(gerakServo(servoDepanKanan_1));
-  servo0_2.writeMicroseconds(gerakServo(servoDepanKanan_2));
-  servo1_0.writeMicroseconds(gerakServo(servoTengahKanan_0));
-  servo1_1.writeMicroseconds(gerakServo(servoTengahKanan_1));
-  servo1_2.writeMicroseconds(gerakServo(servoTengahKanan_2));
-  servo2_0.writeMicroseconds(gerakServo(servoBelakangKanan_0));
-  servo2_1.writeMicroseconds(gerakServo(servoBelakangKanan_1));
-  servo2_2.writeMicroseconds(gerakServo(servoBelakangKanan_2));
+  servo0_0.writeMicroseconds(gerakServo(sys[0]));
+  servo0_1.writeMicroseconds(gerakServo(sys[1]));
+  servo0_2.writeMicroseconds(gerakServo(sys[2]));
+  servo1_0.writeMicroseconds(gerakServo(sys[3]));
+  servo1_1.writeMicroseconds(gerakServo(sys[4]));
+  servo1_2.writeMicroseconds(gerakServo(sys[5]));
+  servo2_0.writeMicroseconds(gerakServo(sys[6]));
+  servo2_1.writeMicroseconds(gerakServo(sys[7]));
+  servo2_2.writeMicroseconds(gerakServo(sys[8]));
 
-  servo3_0.writeMicroseconds(gerakServo(servoBelakangKiri_0));
-  servo3_1.writeMicroseconds(gerakServo(servoBelakangKiri_1));
-  servo3_2.writeMicroseconds(gerakServo(servoBelakangKiri_2));
-  servo4_0.writeMicroseconds(gerakServo(servoTengahKiri_0));
-  servo4_1.writeMicroseconds(gerakServo(servoTengahKiri_1));
-  servo4_2.writeMicroseconds(gerakServo(servoTengahKiri_2));
-  servo5_0.writeMicroseconds(gerakServo(servoDepanKiri_0));
-  servo5_1.writeMicroseconds(gerakServo(servoDepanKiri_1));
-  servo5_2.writeMicroseconds(gerakServo(servoDepanKiri_2));
+  servo3_0.writeMicroseconds(gerakServo(sys[9]));
+  servo3_1.writeMicroseconds(gerakServo(sys[10]));
+  servo3_2.writeMicroseconds(gerakServo(sys[11]));
+  servo4_0.writeMicroseconds(gerakServo(sys[12]));
+  servo4_1.writeMicroseconds(gerakServo(sys[13]));
+  servo4_2.writeMicroseconds(gerakServo(sys[14]));
+  servo5_0.writeMicroseconds(gerakServo(sys[15]));
+  servo5_1.writeMicroseconds(gerakServo(sys[16]));
+  servo5_2.writeMicroseconds(gerakServo(sys[17]));
 }
 
 void BodyIk() {
