@@ -142,10 +142,13 @@ void setKaki() {
 }
 
 void setGerak() {
-  langkahDatar[0] = (lebarLangkah / (rate * 2));
+  langkahDatar[0] = (lebarLangkah / (rate * (2)));
 
   langkahDatar[1] = (lebarLangkah / (rate * (1.5)));  //ke arah 1 kanan
   langkahDatar[2] = (lebarLangkah / (rate * (1)));    //ke arah 1 kiri
+
+  langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
+  langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
 
   langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
   langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
@@ -153,10 +156,7 @@ void setGerak() {
   langkahDatar[7] = (lebarLangkah / (rate * (1.3)));  //ke arah 3 kanan
   langkahDatar[8] = (lebarLangkah / (rate * (1.5)));  //ke arah 3 kiri
 
-  langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
-  langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
-
-  langkahDatar[17] = (lebarLangkahPivot / (rate * (2.8)));  //pivot Api
+  langkahDatar[9] = (lebarLangkah / (rate * (1)));  //pivot
 }
 
 void setup() {
@@ -503,30 +503,29 @@ void motion(int idLeg, int indexLebar)  //0,1
   {
     if (leg[idLeg].gerakan == 0)  //gerak segitiga
     {
-      if (leg[idLeg].posisi > rate3)  //((rate*3)+1))
+      if (leg[idLeg].posisi > rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX -= langkahDatar[indexLebar];
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
-      } else if (leg[idLeg].posisi <= rate3)  //((rate*3)+1))
+      } else if (leg[idLeg].posisi <= rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX -= langkahDatar[indexLebar];
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       }
-      if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
-      {
+      if (leg[idLeg].posisi == 1) {
         leg[idLeg].gerakan = 1;
       }
 
     } else if (leg[idLeg].gerakan == 1)  //dorong
     {
-      if (leg[idLeg].posisi < rate4)  //((rate*4)+1))
+      if (leg[idLeg].posisi < rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiX += langkahDatar[indexLebar];
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
-      if (leg[idLeg].posisi == rate4)  //((rate*4)+1))
+      if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
       {
         leg[idLeg].gerakan = 0;
       }
@@ -557,10 +556,28 @@ void directions(int ubahGerak) {
     leg[2].motion = 0;
     leg[3].motion = 5;
     leg[4].motion = 0;
-    leg[5].motion = 4;
+    leg[5].motion = 5;
   } else if (inputBefore == 4) {
     indexKanan = 7;
     indexKiri = 8;
+  } else if (inputBefore == 5) {  //pivot KIRI
+    indexKanan = 9;
+    indexKiri = 9;
+    leg[0].motion = 1;
+    leg[1].motion = 3;
+    leg[2].motion = 1;
+    leg[3].motion = 5;
+    leg[4].motion = 0;
+    leg[5].motion = 5;
+  } else if (inputBefore == 6) {  //pivot KANAN
+    indexKanan = 9;
+    indexKiri = 9;
+    leg[0].motion = 0;
+    leg[1].motion = 2;
+    leg[2].motion = 0;
+    leg[3].motion = 4;
+    leg[4].motion = 1;
+    leg[5].motion = 4;
   }
 
   // Serial.println(ubahGerak);
@@ -576,6 +593,18 @@ void directions(int ubahGerak) {
   //   {
   //     leg[kananB].motion = 1;
   //     motion(kananB, indexKanan);
+  //     syncLeg();
+  //   }
+  //   ubahGerak = 1;
+  // }
+
+  //GERAKAN PADA PIVOT
+  // if (ubahGerak == 0) {
+  //   while (leg[0].posisi != rate4 && leg[2].posisi != rate4) {
+  //     leg[0].motion = 2;
+  //     motion(0, 0);
+  //     leg[2].motion = 2;
+  //     motion(2, 0);
   //     syncLeg();
   //   }
   //   ubahGerak = 1;
@@ -789,11 +818,11 @@ void cekPerintah(int input, int ubahGerak) {
   } else if (inputBefore == 5)  // pivot KIRI
   {
     setKaki();
-    pivot(1, ubahGerak);
+    directions(ubahGerak);
   } else if (inputBefore == 6)  // pivot KANAN
   {
     setKaki();
-    pivot(0, ubahGerak);
+    directions(ubahGerak);
   } else syncLeg();
   delay(delayKecepatan);
 }
@@ -850,7 +879,7 @@ void diam() {
 }
 
 void loop() {
-  int input = 3;
+  int input = 6;
   // inverse(3,,5,4,5);
   // pasangKaki();
   cekPerintah(input, ubahGerak);
