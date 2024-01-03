@@ -141,11 +141,11 @@ void setKaki() {
   bukaanKakiKiriDepan = -15;
 }
 
-void setGerak(){
+void setGerak() {
   langkahDatar[0] = (lebarLangkah / (rate * 2));
 
   langkahDatar[1] = (lebarLangkah / (rate * (1.5)));  //ke arah 1 kanan
-  langkahDatar[2] = (lebarLangkah / (rate * (1)));  //ke arah 1 kiri
+  langkahDatar[2] = (lebarLangkah / (rate * (1)));    //ke arah 1 kiri
 
   langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
   langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
@@ -700,7 +700,7 @@ void motion(int idLeg, int indexLebar)  //0,1
   // delay(10);
 }
 
-void directions(int kananD, int kananT, int kananB, int kiriB, int kiriT, int kiriD, int ubahGerak) {
+void directions(int ubahGerak) {
   if (inputBefore == 1) {
     indexKanan = 1;
     indexKiri = 2;
@@ -732,19 +732,28 @@ void directions(int kananD, int kananT, int kananB, int kiriB, int kiriT, int ki
   //   }
   //   ubahGerak = 1;
   // }
-
-  leg[kananD].motion = 1;
-  leg[kananT].motion = 3;
-  leg[kananB].motion = 1;
-  leg[kiriB].motion = 4;
-  leg[kiriT].motion = 1;
-  leg[kiriD].motion = 4;
-  motion(kananD, indexKanan);
-  motion(kananT, indexKanan);
-  motion(kananB, indexKanan);
-  motion(kiriB, indexKiri);
-  motion(kiriT, indexKiri);
-  motion(kiriD, indexKiri);
+  if (inputBefore == 1) {
+    leg[0].motion = 1;
+    leg[1].motion = 3;
+    leg[2].motion = 1;
+    leg[3].motion = 4;
+    leg[4].motion = 1;
+    leg[5].motion = 4;
+  }
+  else if(inputBefore == 3){
+    leg[0].motion = 1;
+    leg[1].motion = 3;
+    leg[2].motion = 1;
+    leg[3].motion = 4;
+    leg[4].motion = 1;
+    leg[5].motion = 4;
+  }
+  motion(0, indexKanan);
+  motion(1, indexKanan);
+  motion(2, indexKanan);
+  motion(3, indexKiri);
+  motion(4, indexKiri);
+  motion(5, indexKiri);
   syncLeg();
 }
 
@@ -932,7 +941,7 @@ void cekPerintah(int input, int ubahGerak) {
   } else if (inputBefore == 1)  //maju
   {
     setKaki();
-    directions(0, 1, 2, 3, 4, 5, ubahGerak);
+    directions(ubahGerak);
   } else if (inputBefore == 2)  //kiri
   {
     setKaki();
@@ -940,7 +949,7 @@ void cekPerintah(int input, int ubahGerak) {
   } else if (inputBefore == 3)  //mundur
   {
     setKaki();
-    directions(3, 4, 5, 0, 1, 2, ubahGerak);
+    directions(ubahGerak);
   } else if (inputBefore == 4)  //kanan
   {
     setKaki();
@@ -987,29 +996,29 @@ void diam() {
   int ata = 45;  //semakin kecil semakin
   int ten = 60;  //semakin kecil semakin
   int baw = 90;  //semakin kecil semakin ketutup
-  // servo0_0.writeMicroseconds(gerakServo(ata));
-  // servo0_1.writeMicroseconds(gerakServo(ten));
-  // servo0_2.writeMicroseconds(gerakServo(baw + 10));
-  // servo1_0.writeMicroseconds(gerakServo(ata));
-  // servo1_1.writeMicroseconds(gerakServo(ten));
-  // servo1_2.writeMicroseconds(gerakServo(baw));
-  // servo2_0.writeMicroseconds(gerakServo(ata));
-  // servo2_1.writeMicroseconds(gerakServo(ten));
-  // servo2_2.writeMicroseconds(gerakServo(baw + 5));
+  servo0_0.writeMicroseconds(gerakServo(ata));
+  servo0_1.writeMicroseconds(gerakServo(ten));
+  servo0_2.writeMicroseconds(gerakServo(baw + 10));
+  servo1_0.writeMicroseconds(gerakServo(ata));
+  servo1_1.writeMicroseconds(gerakServo(ten));
+  servo1_2.writeMicroseconds(gerakServo(baw));
+  servo2_0.writeMicroseconds(gerakServo(ata));
+  servo2_1.writeMicroseconds(gerakServo(ten));
+  servo2_2.writeMicroseconds(gerakServo(baw + 5));
 
-  // servo3_0.writeMicroseconds(gerakServo((90 + ata)));
-  // servo3_1.writeMicroseconds(gerakServo((90 +ten)));
-  // servo3_2.writeMicroseconds(gerakServo(baw));
-  // servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
-  // servo4_1.writeMicroseconds(gerakServo((90 +ten)));
-  // servo4_2.writeMicroseconds(gerakServo(baw));
+  servo3_0.writeMicroseconds(gerakServo((90 + ata)));
+  servo3_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo3_2.writeMicroseconds(gerakServo(baw));
+  servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
+  servo4_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo4_2.writeMicroseconds(gerakServo(baw));
   servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
   servo5_1.writeMicroseconds(gerakServo((90 + ten)));
   servo5_2.writeMicroseconds(gerakServo(baw));
 }
 
 void loop() {
-  int input = 1;
+  int input = 3;
   // inverse(3,,5,4,5);
   // pasangKaki();
   cekPerintah(input, ubahGerak);
