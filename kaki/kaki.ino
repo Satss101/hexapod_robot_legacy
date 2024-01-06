@@ -183,7 +183,7 @@ void setup() {
     pinMode(pb[i], INPUT_PULLUP);
   }
   setKaki();
-  Serial.begin(9600);
+  Serial.begin(115200);
   setGerak();
   inisialisasiAwal();
   syncLeg();
@@ -214,6 +214,10 @@ int bacaPb() {
   else if (bacaKaki[3] == 0) return bacaKaki[3];
   else if (bacaKaki[4] == 0) return bacaKaki[4];
   else if (bacaKaki[5] == 0) return bacaKaki[5];
+}
+
+int bacaUART(){
+  if(Serial.available()>0) return Serial.read();
 }
 
 void syncWrite() {
