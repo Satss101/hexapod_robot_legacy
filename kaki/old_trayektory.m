@@ -29,10 +29,12 @@ z = zeros(1, 50);
 for i = 1: 1: 50
     if gerakan == 0  %gerak segitiga
        if posisi < rate1  %(rate+1))
+         posisiX = posisiX +  langkahDatar;
          posisiY = posisiY + langkahDatar;
          posisiZ = posisiZ + langkahNaik;
          posisi = posisi + 1;
        elseif posisi >= rate1 && posisi < rate2  %leg[idLeg].posisi>=(rate+1) && leg[idLeg].posisi<((rate*2)+1)
+         posisiX = posisiX +  langkahDatar;
          posisiY = posisiY + langkahDatar;
          posisiZ = posisiZ - langkahNaik;
          posisi = posisi + 1;
@@ -42,6 +44,7 @@ for i = 1: 1: 50
        end
     elseif gerakan == 1 %dorong
        if posisi > 1 
+         posisiX = posisiX -  langkahDatar;
          posisiY = posisiY - langkahDatar;
          posisi = posisi - 1;
        end
