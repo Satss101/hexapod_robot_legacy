@@ -675,7 +675,7 @@ void directions() {
   syncLeg();
 }
 /*
-// void pivot(int arah, int ubahGerak) {
+void pivot(int arah, int ubahGerak) {
   if (arah == 0)  //putar kiri
   {
     if (ubahGerak == 0) {
@@ -729,7 +729,7 @@ void directions() {
   }
 }
 
-// void geser(int arah, int ubahGerak) {
+void geser(int arah, int ubahGerak) {
 //   if (arah == 0)  //putar kiri
 //   {
 //     if (ubahGerak == 0) {
@@ -773,75 +773,100 @@ void directions() {
 //     motion(3, 0);
 //     syncLeg();
 //   }
-// }
+}
 
-// void tuningTangga() {
-//   delay(1000);
-//   setServo(0, 45, 100, 90);
-//   setServo(1, 45, 80, 110);
-//   setServo(2, 45, 80, 110);
-//   setServo(3, 45, 100, 90);
-//   syncWrite();
-//   delay(1000);
-//   int hitungTangga = 0;
-//   while (hitungTangga < 5) {
-//     setServo(0, 45, 120, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(0, 15, 120, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(0, 15, 100, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
+void tuningTangga() {
+  delay(1000);
+  setServo(0, 45, 100, 90);
+  setServo(1, 45, 80, 110);
+  setServo(2, 45, 80, 110);
+  setServo(3, 45, 100, 90);
+  syncWrite();
+  delay(1000);
+  int hitungTangga = 0;
+  while (hitungTangga < 5) {
+    setServo(0, 45, 120, 90);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(0, 15, 120, 90);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(0, 15, 100, 90);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     setServo(2, 45, 110, 100);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(2, 90, 110, 100);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(2, 90, 60, 100);
-//     syncWrite();
-//     delay(delayTanggaTama);
+    setServo(2, 45, 110, 100);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(2, 90, 110, 100);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(2, 90, 60, 100);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     setServo(0, 45, 100, 90);
-//     setServo(1, 45, 80, 110);
-//     setServo(2, 45, 80, 110);
-//     setServo(3, 45, 100, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
+    setServo(0, 45, 100, 90);
+    setServo(1, 45, 80, 110);
+    setServo(2, 45, 80, 110);
+    setServo(3, 45, 100, 90);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     setServo(3, 45, 120, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(3, 75, 120, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(3, 75, 100, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
+    setServo(3, 45, 120, 90);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(3, 75, 120, 90);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(3, 75, 100, 90);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     setServo(1, 45, 110, 100);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(1, 0, 110, 100);
-//     syncWrite();
-//     delay(delayTanggaTama);
-//     setServo(1, 0, 60, 110);
-//     syncWrite();
-//     delay(delayTanggaTama);
+    setServo(1, 45, 110, 100);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(1, 0, 110, 100);
+    syncWrite();
+    delay(delayTanggaTama);
+    setServo(1, 0, 60, 110);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     setServo(0, 45, 100, 90);
-//     setServo(1, 45, 80, 110);
-//     setServo(2, 45, 80, 110);
-//     setServo(3, 45, 100, 90);
-//     syncWrite();
-//     delay(delayTanggaTama);
+    setServo(0, 45, 100, 90);
+    setServo(1, 45, 80, 110);
+    setServo(2, 45, 80, 110);
+    setServo(3, 45, 100, 90);
+    syncWrite();
+    delay(delayTanggaTama);
 
-//     hitungTangga++;
-//   }
-// }
+    hitungTangga++;
+  }
+}
+
+void diam() {
+  int ata = 45;  //semakin kecil semakin
+  int ten = 60;  //semakin kecil semakin
+  int baw = 90;  //semakin kecil semakin ketutup
+  servo0_0.writeMicroseconds(gerakServo(ata));
+  servo0_1.writeMicroseconds(gerakServo(ten));
+  servo0_2.writeMicroseconds(gerakServo(baw + 10));
+  servo1_0.writeMicroseconds(gerakServo(ata));
+  servo1_1.writeMicroseconds(gerakServo(ten));
+  servo1_2.writeMicroseconds(gerakServo(baw));
+  servo2_0.writeMicroseconds(gerakServo(ata));
+  servo2_1.writeMicroseconds(gerakServo(ten));
+  servo2_2.writeMicroseconds(gerakServo(baw + 5));
+
+  servo3_0.writeMicroseconds(gerakServo((90 + ata)));
+  servo3_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo3_2.writeMicroseconds(gerakServo(baw));
+  servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
+  servo4_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo4_2.writeMicroseconds(gerakServo(baw));
+  servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
+  servo5_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo5_2.writeMicroseconds(gerakServo(baw));
+}
 */
 
 void pasangKaki() {
@@ -868,31 +893,6 @@ void pasangKaki() {
   servo5_0.writeMicroseconds(gerakServo(90));
   servo5_1.writeMicroseconds(gerakServo(180));  //0
   servo5_2.writeMicroseconds(gerakServo(90));
-}
-
-void diam() {
-  int ata = 45;  //semakin kecil semakin
-  int ten = 60;  //semakin kecil semakin
-  int baw = 90;  //semakin kecil semakin ketutup
-  servo0_0.writeMicroseconds(gerakServo(ata));
-  servo0_1.writeMicroseconds(gerakServo(ten));
-  servo0_2.writeMicroseconds(gerakServo(baw + 10));
-  servo1_0.writeMicroseconds(gerakServo(ata));
-  servo1_1.writeMicroseconds(gerakServo(ten));
-  servo1_2.writeMicroseconds(gerakServo(baw));
-  servo2_0.writeMicroseconds(gerakServo(ata));
-  servo2_1.writeMicroseconds(gerakServo(ten));
-  servo2_2.writeMicroseconds(gerakServo(baw + 5));
-
-  servo3_0.writeMicroseconds(gerakServo((90 + ata)));
-  servo3_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo3_2.writeMicroseconds(gerakServo(baw));
-  servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
-  servo4_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo4_2.writeMicroseconds(gerakServo(baw));
-  servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
-  servo5_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo5_2.writeMicroseconds(gerakServo(baw));
 }
 
 void loop() {
