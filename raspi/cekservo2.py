@@ -29,6 +29,7 @@ while count < numLoops:
     print("set to 0-deg")
     setAngle(0)
     sleep(1)
+    sleep(1)
 
         
     print("set to 90-deg")
