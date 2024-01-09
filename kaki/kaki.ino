@@ -160,7 +160,6 @@ void setup() {
   }
   setKaki();
   Serial.begin(115200);
-  // setGerak();
   inisialisasiAwal();
   syncLeg();
 }
