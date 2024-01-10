@@ -39,9 +39,9 @@ Servo servo5_0;
 Servo servo5_1;
 Servo servo5_2;
 
-#define coxa 77  //30 //waktu dibagi dengan
+#define coxa 53  //30 //waktu dibagi dengan
 #define femur 55
-#define tibia 104
+#define tibia 112
 #define rate 5             // ketelitian langkah  //harus ganjil
 #define lebarLangkah 60    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
 #define tinggiLangkah 40   //tinggi langkah dibagi rate harus bulat
