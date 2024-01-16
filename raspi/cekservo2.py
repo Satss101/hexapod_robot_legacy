@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 servo = [12,3]
 srf = [17,27,22,10,9,11]
+i = 1
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(servo[0], GPIO.OUT)
 pwm=GPIO.PWM(servo[0], 60)
