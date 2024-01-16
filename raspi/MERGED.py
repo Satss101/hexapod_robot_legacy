@@ -70,11 +70,11 @@ def setAngle(pin, angle):
    '''
 #try: 
 while True:
-    #if (bacaPB() == False): #object is far away
-        #ledNyala()
-    #elif (bacaPB() == True): #object is close
-        #ledMati()
-    jarak = bacaSrf(2)
+    if (bacaPB() == False): #object is far away
+        ledNyala()
+    elif (bacaPB() == True): #object is close
+        ledMati()
+    jarak = bacaSrf(0)
     # SRF[3] TIDAK BISA 
     print (jarak," cm")
     time.sleep(.5)
