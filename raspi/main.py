@@ -1,9 +1,12 @@
 import arm_bot
-import cekservo2
-import RPi.GPIO as GPIO
-from time import sleep
+import merge_sensor
 import math
+import citra_legacy
 
 while True :
-    arm_bot.bentukL()
+    
+    
+    
+    
+    
 
