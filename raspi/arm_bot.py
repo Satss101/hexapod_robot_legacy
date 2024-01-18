@@ -130,4 +130,3 @@ while True:
     bentukL()	
         
 
-
