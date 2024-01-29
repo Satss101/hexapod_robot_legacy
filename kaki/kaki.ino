@@ -7,19 +7,19 @@
 #define servoTengahKanan_0 PA7
 #define servoTengahKanan_1 PA6
 #define servoTengahKanan_2 PA5
-#define servoBelakangKanan_0 PA0
+#define servoBelakangKanan_0 PA2
 #define servoBelakangKanan_1 PA1
-#define servoBelakangKanan_2 PB6
-#define servoBelakangKiri_0 PB7
-#define servoBelakangKiri_1 PB9
-#define servoBelakangKiri_2 PB8
+#define servoBelakangKanan_2 PA0
+#define servoBelakangKiri_0 PB3
+#define servoBelakangKiri_1 PB4
+#define servoBelakangKiri_2 PB5
 #define servoTengahKiri_0 PA8
 #define servoTengahKiri_1 PA9
 #define servoTengahKiri_2 PA10
 #define servoDepanKiri_0 PB13
 #define servoDepanKiri_1 PB14
 #define servoDepanKiri_2 PB15
-const char pb[6] = { PC13, PC14, PC15, PA3, PA4, PA15 };
+const char pb[6] = { PC13, PC14, PC15, PA3, PA4, PA12 };
 Servo servo0_0;
 Servo servo0_1;
 Servo servo0_2;
@@ -930,18 +930,19 @@ void pasangKaki() {
 
 void loop() {
   // int input = bacaUART();
-  int input = 1;
-  if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
-    if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
-    {
-      ubahGerak = 0;
-      inisialisasiAwal();
-      inputBefore = input;
-    }
-  }
-  if (inputBefore == 0) {
-    setKaki();
-    syncLeg();
-  } else if (inputBefore > 0) directions();
-  else syncLeg();
+  //int input = 1;
+  //if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
+    //if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
+    //{
+      //ubahGerak = 0;
+      //inisialisasiAwal();
+      //inputBefore = input;
+    //}
+  //}
+  //if (inputBefore == 0) {
+    //setKaki();
+    //syncLeg();
+  //} //else if (inputBefore > 0) directions();
+  //else syncLeg();
+  inisialisasiAwal();
 }
