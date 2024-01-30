@@ -50,7 +50,7 @@ Servo servo5_2;
 
 void syncLeg();
 
-float posisiAwal = ((coxa + femur) / 1);  //1.5
+float posisiAwal = ((coxa + femur) / 1.4);  //1.5
 float posisiKepiting = ((coxa + femur) / 1.3);
 float langkahNaik = (tinggiLangkah / rate);
 int jumlahPosisiKaki = ((rate * 2) + 1);  //terdapat pada void motion
@@ -81,7 +81,7 @@ void inisialisasiAwal() {
     if (a > 2) leg[a].posisiX = posisiAwal * -1;
     else leg[a].posisiX = posisiAwal;
     leg[a].posisiY = posisiAwal;
-    leg[a].posisiZ = -20;
+    leg[a].posisiZ = -37;
     leg[a].posisi = jumlahPosisiKaki;
     leg[a].gerakan = 1;
     inverse(a, leg[a].posisiX, leg[a].posisiY, leg[a].posisiZ);
@@ -93,6 +93,7 @@ void setKaki() {
     leg[0].putar = -15;  //kurang ke kepan
     leg[1].putar = 18;   // tambah ke depan
     leg[2].putar = -20;  //dikurang semakin kedepan
+    
     leg[3].putar = -15;
     leg[4].putar = 20;   // tambah ke depan
     leg[5].putar = -15;  // tambah ke depan
@@ -109,9 +110,9 @@ void setKaki() {
   leg[5].tinggi = 0;
 
   //tambah nilai tambah buka
-  leg[0].bukaan = 20;
+  leg[0].bukaan = 15;
   leg[1].bukaan = 15;
-  leg[2].bukaan = 15;
+  leg[2].bukaan = 40;
   //kurang nilai tambah buka
   leg[3].bukaan = -15;
   leg[4].bukaan = -15;
@@ -930,7 +931,7 @@ void pasangKaki() {
 
 void loop() {
   // int input = bacaUART();
-  int input = 1;
+  int input = 0;
   if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
     if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
     {
