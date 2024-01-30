@@ -629,7 +629,7 @@ void directions() {
     leg[3].motion = 5;
     leg[4].motion = 0;
     leg[5].motion = 5;
-  } else if (inputBefore == 5) {  //SERONG KIRI BELAKANG
+  } else if (inputBefore == 6) {  //SERONG KIRI BELAKANG
     indexKanan = 11;
     indexKiri = 12;
     leg[0].motion = 0;
@@ -638,10 +638,10 @@ void directions() {
     leg[3].motion = 5;
     leg[4].motion = 0;
     leg[5].motion = 5;
-  } else if (inputBefore == 4) {  //KIRI
+  } else if (inputBefore == 7) {  //KIRI
     indexKanan = 13;
     indexKiri = 14;
-  } else if (inputBefore == 5) {  //SERONG KIRI DEPAN
+  } else if (inputBefore == 8) {  //SERONG KIRI DEPAN
     indexKanan = 15;
     indexKiri = 16;
     leg[0].motion = 1;
@@ -650,7 +650,7 @@ void directions() {
     leg[3].motion = 4;
     leg[4].motion = 1;
     leg[5].motion = 4;
-  } else if (inputBefore == 6) {  //pivot KIRI
+  } else if (inputBefore == 9) {  //pivot KIRI
     indexKanan = 17;
     indexKiri = 18;
     leg[0].motion = 1;
@@ -659,7 +659,7 @@ void directions() {
     leg[3].motion = 5;
     leg[4].motion = 0;
     leg[5].motion = 5;
-  } else if (inputBefore == 7) {  //pivot KANAN
+  } else if (inputBefore == 10) {  //pivot KANAN
     indexKanan = 9;
     indexKiri = 9;
     leg[0].motion = 0;
@@ -943,6 +943,7 @@ void loop() {
   if (inputBefore == 0) {
     setKaki();
     syncLeg();
-  } else if (inputBefore > 0) directions();
-  else syncLeg();
+  } 
+  else if (inputBefore > 0) directions();
+  // else syncLeg();
 }
