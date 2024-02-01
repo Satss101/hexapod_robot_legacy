@@ -7,12 +7,12 @@
 #define servoTengahKanan_0 PA7
 #define servoTengahKanan_1 PA6
 #define servoTengahKanan_2 PA5
-#define servoBelakangKanan_0 PA0
+#define servoBelakangKanan_0 PA2
 #define servoBelakangKanan_1 PA1
-#define servoBelakangKanan_2 PB6
-#define servoBelakangKiri_0 PB7
-#define servoBelakangKiri_1 PB9
-#define servoBelakangKiri_2 PB8
+#define servoBelakangKanan_2 PA0
+#define servoBelakangKiri_0 PB3
+#define servoBelakangKiri_1 PB4
+#define servoBelakangKiri_2 PB5
 #define servoTengahKiri_0 PA8
 #define servoTengahKiri_1 PA9
 #define servoTengahKiri_2 PA10
@@ -42,10 +42,15 @@ Servo servo5_2;
 #define coxa 53  //30 //waktu dibagi dengan
 #define femur 55
 #define tibia 112
+<<<<<<< Updated upstream
 #define rate 5             // ketelitian langkah  //harus ganjil
 #define lebarLangkah 60    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
+=======
+#define rate 4             // ketelitian langkah  //harus ganjil
+#define lebarLangkah 30    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
+>>>>>>> Stashed changes
 #define tinggiLangkah 40   //tinggi langkah dibagi rate harus bulat
-#define delayKecepatan 30  //80
+#define delayKecepatan 50  //80
 #define Zoff -100
 
 void syncLeg();
@@ -81,7 +86,11 @@ void inisialisasiAwal() {
     if (a > 2) leg[a].posisiX = posisiAwal * -1;
     else leg[a].posisiX = posisiAwal;
     leg[a].posisiY = posisiAwal;
+<<<<<<< Updated upstream
     leg[a].posisiZ = -37;
+=======
+    leg[a].posisiZ = -10;
+>>>>>>> Stashed changes
     leg[a].posisi = jumlahPosisiKaki;
     leg[a].gerakan = 1;
     inverse(a, leg[a].posisiX, leg[a].posisiY, leg[a].posisiZ);
@@ -930,7 +939,10 @@ void pasangKaki() {
 }
 
 void loop() {
+<<<<<<< Updated upstream
   // int input = bacaUART();
+=======
+>>>>>>> Stashed changes
   int input = 0;
   if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
     if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
