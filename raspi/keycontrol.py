@@ -7,8 +7,6 @@ def start():
 def getKey(keyName):
     run = False
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
     keyInput = pygame.key.get_pressed()
     myKey = getattr(pygame,'K_{}'.format(keyName))
     if keyInput [myKey]:
