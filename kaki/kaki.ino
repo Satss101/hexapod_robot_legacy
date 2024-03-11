@@ -1,25 +1,31 @@
 #include <Servo.h>
 #include <SpeedTrig.h>
-// char servo[18] = {PB10, PB1, PB0, PA7, PA6, PA5, PA0, PA1, PB6, PB7, PB9, PB8, PA8, PA9, PA10, PB13, PB14, PB15};
+#include <HardwareSerial.h>
+
+HardwareSerial ftdi(PA10, PA9);
+char keyInput;
+
 #define servoDepanKanan_0 PB10
 #define servoDepanKanan_1 PB1
 #define servoDepanKanan_2 PB0
 #define servoTengahKanan_0 PA7
 #define servoTengahKanan_1 PA6
 #define servoTengahKanan_2 PA5
-#define servoBelakangKanan_0 PA2
+#define servoBelakangKanan_0 PA0
 #define servoBelakangKanan_1 PA1
-#define servoBelakangKanan_2 PA0
-#define servoBelakangKiri_0 PB3
-#define servoBelakangKiri_1 PB4
-#define servoBelakangKiri_2 PB5
+#define servoBelakangKanan_2 PB6
+#define servoBelakangKiri_0 PB7
+#define servoBelakangKiri_1 PB8
+#define servoBelakangKiri_2 PB9
 #define servoTengahKiri_0 PA8
-#define servoTengahKiri_1 PA9
-#define servoTengahKiri_2 PA10
+#define servoTengahKiri_1 PA3
+#define servoTengahKiri_2 PA2
 #define servoDepanKiri_0 PB13
 #define servoDepanKiri_1 PB14
 #define servoDepanKiri_2 PB15
-const char pb[6] = { PC13, PC14, PC15, PA3, PA4, PA15 };
+const int pb[6] = { PC14, PA4, PC15, PA15, PC13, PB12 };
+int tes[6];
+
 Servo servo0_0;
 Servo servo0_1;
 Servo servo0_2;
@@ -42,33 +48,31 @@ Servo servo5_2;
 #define coxa 53  //30 //waktu dibagi dengan
 #define femur 55
 #define tibia 112
-<<<<<<< Updated upstream
-#define rate 5             // ketelitian langkah  //harus ganjil
-#define lebarLangkah 60    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
-=======
-#define rate 4             // ketelitian langkah  //harus ganjil
-#define lebarLangkah 30    // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
->>>>>>> Stashed changes
-#define tinggiLangkah 40   //tinggi langkah dibagi rate harus bulat
-#define delayKecepatan 50  //80
-#define Zoff -100
+#define rate 5            // ketelitian langkah  //harus ganjil
+#define lebarLangkah 45   // lebar langkah dibagi rate*2 harus bulat 40 4 32 //harus bulat agar stabil
+#define tinggiLangkah 45  //tinggi langkah dibagi rate harus bulat
+#define delayKecepatan 30
+#define Zoff -90
 
+int input = 0;
 void syncLeg();
+void inverse(int idLeg, float x, float y, float z);
 
-float posisiAwal = ((coxa + femur) / 1.4);  //1.5
-float posisiKepiting = ((coxa + femur) / 1.3);
+float posisiAwal = ((coxa + femur) / 1);  //1.5
+// float posisiKepiting = ((coxa + femur) / 1.3);
 float langkahNaik = (tinggiLangkah / rate);
 int jumlahPosisiKaki = ((rate * 2) + 1);  //terdapat pada void motion
 int rate1 = (rate + 1);
 int rate2 = ((rate * 2) + 1);
 int rate3 = ((rate * 3) + 1);
 int rate4 = ((rate * 4) + 1);
-float indexKanan = 0;
-float indexKiri = 0;
+int indexKanan = 0;
+int indexKiri = 0;
 int inputBefore = 0;
-int langkahDatar = 0;
 int ubahGerak = 0;
-// float langkahDatar[20];
+
+float langkahDatar[20];
+int bacaKakiPb[6];
 
 struct sys {
   float pos, teta, tet;
@@ -76,7 +80,8 @@ struct sys {
 } sys[18];
 
 struct leg {
-  int sudutDalam, sudutTengah, sudutLuar, posisi, motion, gerakan, tinggi, bukaan, putar, bacaKakiPb;  // ada 4 motion
+  int sudutDalam, sudutTengah, sudutLuar, posisi, motion, gerakan;
+  int tinggi, bukaan, putar;  // ada 4 motion
   float posisiX, posisiY, posisiZ;
   // 0 = gerakan segitiga     1 = gerakan dorong
 } leg[6];
@@ -86,11 +91,7 @@ void inisialisasiAwal() {
     if (a > 2) leg[a].posisiX = posisiAwal * -1;
     else leg[a].posisiX = posisiAwal;
     leg[a].posisiY = posisiAwal;
-<<<<<<< Updated upstream
-    leg[a].posisiZ = -37;
-=======
     leg[a].posisiZ = -10;
->>>>>>> Stashed changes
     leg[a].posisi = jumlahPosisiKaki;
     leg[a].gerakan = 1;
     inverse(a, leg[a].posisiX, leg[a].posisiY, leg[a].posisiZ);
@@ -101,52 +102,57 @@ void setKaki() {
   if (inputBefore != 0) {
     leg[0].putar = -15;  //kurang ke kepan
     leg[1].putar = 18;   // tambah ke depan
-    leg[2].putar = -20;  //dikurang semakin kedepan
-    
-    leg[3].putar = -15;
+    leg[2].putar = -15;  //dikurang semakin kedepan
+    leg[3].putar = 10;
     leg[4].putar = 20;   // tambah ke depan
     leg[5].putar = -15;  // tambah ke depan
 
     leg[4].tinggi = 20;
-    leg[0].tinggi = -20;
-    leg[2].tinggi = -20;
-
-    // leg[3].bukaan = -50;
+    leg[0].bukaan = 30;
+    // leg[3].tinggi = -10;
+    // leg[5].tinggi = -10;
+  } else {
+    leg[0].tinggi = 0;  //tambah jadi naik
+    leg[4].tinggi = 0;
   }
   //tambah nilai tambah buka
   leg[1].tinggi = 0;
+  leg[2].tinggi = 0;
   leg[3].tinggi = 0;
   leg[5].tinggi = 0;
 
   //tambah nilai tambah buka
-  leg[0].bukaan = 15;
+  leg[0].bukaan = 20;
   leg[1].bukaan = 15;
-  leg[2].bukaan = 40;
+  leg[2].bukaan = 15;
   //kurang nilai tambah buka
-  leg[3].bukaan = -15;
+  leg[3].bukaan = -30;
   leg[4].bukaan = -15;
-  leg[5].bukaan = -20;
+  leg[5].bukaan = -30;
+  // }
 }
 
-// void setGerak() {
-//   langkahDatar[0] = (lebarLangkah / (rate * (2)));
+void setGerak() {
+  langkahDatar[0] = (lebarLangkah / (rate * (2)));
 
-//   langkahDatar[1] = (lebarLangkah / (rate * (1.5)));  //ke arah 1 kanan
-//   langkahDatar[2] = (lebarLangkah / (rate * (1)));    //ke arah 1 kiri
+  langkahDatar[1] = (lebarLangkah / (rate * (1)));  //ke arah 1 kanan
+  langkahDatar[2] = (lebarLangkah / (rate * (1)));  //ke arah 1 kiri
 
-//   langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
-//   langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
+  langkahDatar[3] = (lebarLangkah / (rate * (1.2)));  //ke arah 4 kanan
+  langkahDatar[4] = (lebarLangkah / (rate * (1.5)));  //ke arah 4 kiri
 
-//   langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
-//   langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
+  langkahDatar[5] = (lebarLangkah / (rate * (1)));  //ke arah 2 kanan
+  langkahDatar[6] = (lebarLangkah / (rate * (1)));  //ke arah 2 kiri
 
-//   langkahDatar[7] = (lebarLangkah / (rate * (1.3)));  //ke arah 3 kanan
-//   langkahDatar[8] = (lebarLangkah / (rate * (1.5)));  //ke arah 3 kiri
+  langkahDatar[7] = (lebarLangkah / (rate * (1.3)));  //ke arah 3 kanan
+  langkahDatar[8] = (lebarLangkah / (rate * (1.5)));  //ke arah 3 kiri
 
-//   langkahDatar[9] = (lebarLangkah / (rate * (1)));  //pivot
-// }
+  langkahDatar[9] = (lebarLangkah / (rate * (1)));  //pivot
+}
 
 void setup() {
+  Serial.begin(115200);
+  ftdi.begin(115200); 
   servo0_0.attach(servoDepanKanan_0);
   servo0_1.attach(servoDepanKanan_1);
   servo0_2.attach(servoDepanKanan_2);
@@ -169,7 +175,7 @@ void setup() {
     pinMode(pb[i], INPUT_PULLUP);
   }
   setKaki();
-  Serial.begin(115200);
+  setGerak();
   inisialisasiAwal();
   syncLeg();
 }
@@ -189,20 +195,15 @@ int float2int(float input) {
   else return temp + 1;
 }
 
-int bacaPb() {
+void bacaPb() {
   for (int j = 0; j < 6; j++) {
-    leg[j].bacaKakiPb = digitalRead(pb[j]);
+    bacaKakiPb[j] = digitalRead(pb[j]);
+    Serial.println(bacaKakiPb[j]);
   }
-  if (leg[0].bacaKakiPb == 0) return leg[0].bacaKakiPb;
-  else if (leg[1].bacaKakiPb == 0) return leg[1].bacaKakiPb;
-  else if (leg[2].bacaKakiPb == 0) return leg[2].bacaKakiPb;
-  else if (leg[3].bacaKakiPb == 0) return leg[3].bacaKakiPb;
-  else if (leg[4].bacaKakiPb == 0) return leg[4].bacaKakiPb;
-  else if (leg[5].bacaKakiPb == 0) return leg[5].bacaKakiPb;
 }
 
 int bacaUART() {
-  if (Serial.available() > 0) return Serial.read();
+  ftdi.println("Hola Diablos");
 }
 
 void syncWrite() {
@@ -321,20 +322,21 @@ void inverse(int idLeg, float x, float y, float z) {
   leg[idLeg].sudutLuar = sudut3;
 }
 
-void motion(int idLeg, int indexLebar) {
-  langkahDatar = (lebarLangkah / (rate * (indexLebar)));
+void motion(int idLeg, int indexLebar)  //0,1
+{
+  bacaPb();
   if (leg[idLeg].motion == 0)  // ke Y positif
   {
     if (leg[idLeg].gerakan == 0)  //gerak segitiga
     {
       if (leg[idLeg].posisi < rate1)  //(rate+1))
       {
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi++;
       } else if (leg[idLeg].posisi >= rate1 && leg[idLeg].posisi < rate2)  //leg[idLeg].posisi>=(rate+1) && leg[idLeg].posisi<((rate*2)+1)
       {
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi++;
       }
@@ -344,7 +346,7 @@ void motion(int idLeg, int indexLebar) {
     } else if (leg[idLeg].gerakan == 1)  //dorong
     {
       if (leg[idLeg].posisi > 1) {
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisi--;
       }
       if (leg[idLeg].posisi == 1) {
@@ -359,12 +361,12 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate1)  //(rate+1))
       {
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
       } else if (leg[idLeg].posisi <= rate1)  //(rate+1))
       {
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       }
@@ -376,7 +378,7 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
@@ -390,12 +392,12 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi++;
       } else if (leg[idLeg].posisi >= rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi++;
       }
@@ -407,7 +409,7 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisi--;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
@@ -423,12 +425,12 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
       } else if (leg[idLeg].posisi <= rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       }
@@ -441,7 +443,7 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate4)  //((rate*4)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
       if (leg[idLeg].posisi == rate4)  //((rate*4)+1))
@@ -457,12 +459,12 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi++;
       } else if (leg[idLeg].posisi >= rate3)  //((rate*3)+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi++;
       }
@@ -475,7 +477,7 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate2)  //((rate*4)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisi--;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*4)+1))
@@ -491,12 +493,12 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
       } else if (leg[idLeg].posisi <= rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       }
@@ -508,7 +510,7 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
@@ -522,14 +524,14 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       } else if (leg[idLeg].posisi <= rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
       }
@@ -541,8 +543,8 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
@@ -556,14 +558,14 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi > rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisiZ += langkahNaik;
         leg[idLeg].posisi--;
       } else if (leg[idLeg].posisi <= rate1)  //(rate+1))
       {
-        leg[idLeg].posisiX += langkahDatar;
-        leg[idLeg].posisiY += langkahDatar;
+        leg[idLeg].posisiX += langkahDatar[indexLebar];
+        leg[idLeg].posisiY += langkahDatar[indexLebar];
         leg[idLeg].posisiZ -= langkahNaik;
         leg[idLeg].posisi--;
       }
@@ -575,8 +577,8 @@ void motion(int idLeg, int indexLebar) {
     {
       if (leg[idLeg].posisi < rate2)  //((rate*2)+1))
       {
-        leg[idLeg].posisiX -= langkahDatar;
-        leg[idLeg].posisiY -= langkahDatar;
+        leg[idLeg].posisiX -= langkahDatar[indexLebar];
+        leg[idLeg].posisiY -= langkahDatar[indexLebar];
         leg[idLeg].posisi++;
       }
       if (leg[idLeg].posisi == rate2)  //((rate*2)+1))
@@ -589,9 +591,8 @@ void motion(int idLeg, int indexLebar) {
 }
 
 void directions() {
-  setKaki();
-  if (inputBefore == 1) {  //MAJU
-    indexKanan = 1.5;
+  if (inputBefore == 1) {
+    indexKanan = 1;
     indexKiri = 2;
     leg[0].motion = 1;
     leg[1].motion = 3;
@@ -599,18 +600,21 @@ void directions() {
     leg[3].motion = 4;
     leg[4].motion = 1;
     leg[5].motion = 4;
-  } else if (inputBefore == 2) {  //SERONG KANAN DEPAN
+  } else if (inputBefore == 2) {
     indexKanan = 3;
     indexKiri = 4;
-    leg[0].motion = 1;
-    leg[1].motion = 3;
-    leg[2].motion = 1;
-    leg[3].motion = 4;
-    leg[4].motion = 1;
-    leg[5].motion = 4;
-  } else if (inputBefore == 3) {  //KANAN
+  } else if (inputBefore == 3) {
     indexKanan = 5;
     indexKiri = 6;
+    leg[0].motion = 0;
+    leg[1].motion = 2;
+    leg[2].motion = 0;
+    leg[3].motion = 5;
+    leg[4].motion = 0;
+    leg[5].motion = 5;
+  } else if (inputBefore == 4) {  //KANAN
+    indexKanan = 7;
+    indexKiri = 8;
     leg[0].motion = 6;  //solved
     leg[1].motion = 7;
     leg[2].motion = 6;
@@ -620,55 +624,16 @@ void directions() {
     // leg[idLeg].posisiX = posisiKepiting;
     // leg[idLeg].posisiY = posisiKepiting;
     // leg[idLeg].posisiZ = -20;
-  } else if (inputBefore == 4) {  //SERONG KANAN BELAKANG
-    indexKanan = 7;
-    indexKiri = 8;
-    leg[0].motion = 0;
-    leg[1].motion = 2;
-    leg[2].motion = 0;
-    leg[3].motion = 5;
-    leg[4].motion = 0;
-    leg[5].motion = 5;
-  } else if (inputBefore == 5) {  //BELAKANG
+  } else if (inputBefore == 5) {  //pivot KIRI
     indexKanan = 9;
-    indexKiri = 10;
-    leg[0].motion = 0;
-    leg[1].motion = 2;
-    leg[2].motion = 0;
-    leg[3].motion = 5;
-    leg[4].motion = 0;
-    leg[5].motion = 5;
-  } else if (inputBefore == 6) {  //SERONG KIRI BELAKANG
-    indexKanan = 11;
-    indexKiri = 12;
-    leg[0].motion = 0;
-    leg[1].motion = 2;
-    leg[2].motion = 0;
-    leg[3].motion = 5;
-    leg[4].motion = 0;
-    leg[5].motion = 5;
-  } else if (inputBefore == 7) {  //KIRI
-    indexKanan = 13;
-    indexKiri = 14;
-  } else if (inputBefore == 8) {  //SERONG KIRI DEPAN
-    indexKanan = 15;
-    indexKiri = 16;
-    leg[0].motion = 1;
-    leg[1].motion = 3;
-    leg[2].motion = 1;
-    leg[3].motion = 4;
-    leg[4].motion = 1;
-    leg[5].motion = 4;
-  } else if (inputBefore == 9) {  //pivot KIRI
-    indexKanan = 17;
-    indexKiri = 18;
+    indexKiri = 9;
     leg[0].motion = 1;
     leg[1].motion = 3;
     leg[2].motion = 1;
     leg[3].motion = 5;
     leg[4].motion = 0;
     leg[5].motion = 5;
-  } else if (inputBefore == 10) {  //pivot KANAN
+  } else if (inputBefore == 6) {  //pivot KANAN
     indexKanan = 9;
     indexKiri = 9;
     leg[0].motion = 0;
@@ -717,8 +682,9 @@ void directions() {
   motion(5, indexKiri);
   syncLeg();
 }
+
 /*
-void pivot(int arah, int ubahGerak) {
+// void pivot(int arah, int ubahGerak) {
   if (arah == 0)  //putar kiri
   {
     if (ubahGerak == 0) {
@@ -772,144 +738,119 @@ void pivot(int arah, int ubahGerak) {
   }
 }
 
-void geser(int arah, int ubahGerak) {
-  if (arah == 0)  //putar kiri
-  {
-    if (ubahGerak == 0) {
-      while (leg[0].posisi != rate4 && leg[2].posisi != rate4) {
-        leg[0].motion = 2;
-        motion(0, 0);
-        leg[2].motion = 2;
-        motion(2, 0);
-        syncLeg();
-      }
-      ubahGerak = 1;
-    }
-    leg[0].motion = 2;
-    leg[1].motion = 2;
-    leg[2].motion = 2;
-    leg[3].motion = 2;
-    motion(0, 0);
-    motion(1, 0);
-    motion(2, 0);
-    motion(3, 0);
-    syncLeg();
-  } else if (arah == 1)  //putar kanan
-  {
-    if (ubahGerak == 0) {
-      while (leg[1].posisi != 1 && leg[3].posisi != 1) {
-        leg[1].motion = 1;
-        motion(1, 0);
-        leg[3].motion = 1;
-        motion(3, 0);
-        syncLeg();
-      }
-      ubahGerak = 1;
-    }
-    leg[0].motion = 1;
-    leg[1].motion = 1;
-    leg[2].motion = 1;
-    leg[3].motion = 1;
-    motion(0, 0);
-    motion(1, 0);
-    motion(2, 0);
-    motion(3, 0);
-    syncLeg();
-  }
-}
+// void geser(int arah, int ubahGerak) {
+//   if (arah == 0)  //putar kiri
+//   {
+//     if (ubahGerak == 0) {
+//       while (leg[0].posisi != rate4 && leg[2].posisi != rate4) {
+//         leg[0].motion = 2;
+//         motion(0, 0);
+//         leg[2].motion = 2;
+//         motion(2, 0);
+//         syncLeg();
+//       }
+//       ubahGerak = 1;
+//     }
+//     leg[0].motion = 2;
+//     leg[1].motion = 2;
+//     leg[2].motion = 2;
+//     leg[3].motion = 2;
+//     motion(0, 0);
+//     motion(1, 0);
+//     motion(2, 0);
+//     motion(3, 0);
+//     syncLeg();
+//   } else if (arah == 1)  //putar kanan
+//   {
+//     if (ubahGerak == 0) {
+//       while (leg[1].posisi != 1 && leg[3].posisi != 1) {
+//         leg[1].motion = 1;
+//         motion(1, 0);
+//         leg[3].motion = 1;
+//         motion(3, 0);
+//         syncLeg();
+//       }
+//       ubahGerak = 1;
+//     }
+//     leg[0].motion = 1;
+//     leg[1].motion = 1;
+//     leg[2].motion = 1;
+//     leg[3].motion = 1;
+//     motion(0, 0);
+//     motion(1, 0);
+//     motion(2, 0);
+//     motion(3, 0);
+//     syncLeg();
+//   }
+// }
 
-void tuningTangga() {
-  delay(1000);
-  setServo(0, 45, 100, 90);
-  setServo(1, 45, 80, 110);
-  setServo(2, 45, 80, 110);
-  setServo(3, 45, 100, 90);
-  syncWrite();
-  delay(1000);
-  int hitungTangga = 0;
-  while (hitungTangga < 5) {
-    setServo(0, 45, 120, 90);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(0, 15, 120, 90);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(0, 15, 100, 90);
-    syncWrite();
-    delay(delayTanggaTama);
+// void tuningTangga() {
+//   delay(1000);
+//   setServo(0, 45, 100, 90);
+//   setServo(1, 45, 80, 110);
+//   setServo(2, 45, 80, 110);
+//   setServo(3, 45, 100, 90);
+//   syncWrite();
+//   delay(1000);
+//   int hitungTangga = 0;
+//   while (hitungTangga < 5) {
+//     setServo(0, 45, 120, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(0, 15, 120, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(0, 15, 100, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    setServo(2, 45, 110, 100);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(2, 90, 110, 100);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(2, 90, 60, 100);
-    syncWrite();
-    delay(delayTanggaTama);
+//     setServo(2, 45, 110, 100);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(2, 90, 110, 100);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(2, 90, 60, 100);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    setServo(0, 45, 100, 90);
-    setServo(1, 45, 80, 110);
-    setServo(2, 45, 80, 110);
-    setServo(3, 45, 100, 90);
-    syncWrite();
-    delay(delayTanggaTama);
+//     setServo(0, 45, 100, 90);
+//     setServo(1, 45, 80, 110);
+//     setServo(2, 45, 80, 110);
+//     setServo(3, 45, 100, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    setServo(3, 45, 120, 90);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(3, 75, 120, 90);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(3, 75, 100, 90);
-    syncWrite();
-    delay(delayTanggaTama);
+//     setServo(3, 45, 120, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(3, 75, 120, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(3, 75, 100, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    setServo(1, 45, 110, 100);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(1, 0, 110, 100);
-    syncWrite();
-    delay(delayTanggaTama);
-    setServo(1, 0, 60, 110);
-    syncWrite();
-    delay(delayTanggaTama);
+//     setServo(1, 45, 110, 100);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(1, 0, 110, 100);
+//     syncWrite();
+//     delay(delayTanggaTama);
+//     setServo(1, 0, 60, 110);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    setServo(0, 45, 100, 90);
-    setServo(1, 45, 80, 110);
-    setServo(2, 45, 80, 110);
-    setServo(3, 45, 100, 90);
-    syncWrite();
-    delay(delayTanggaTama);
+//     setServo(0, 45, 100, 90);
+//     setServo(1, 45, 80, 110);
+//     setServo(2, 45, 80, 110);
+//     setServo(3, 45, 100, 90);
+//     syncWrite();
+//     delay(delayTanggaTama);
 
-    hitungTangga++;
-  }
-}
-
-void diam() {
-  int ata = 45;  //semakin kecil semakin
-  int ten = 60;  //semakin kecil semakin
-  int baw = 90;  //semakin kecil semakin ketutup
-  servo0_0.writeMicroseconds(gerakServo(ata));
-  servo0_1.writeMicroseconds(gerakServo(ten));
-  servo0_2.writeMicroseconds(gerakServo(baw + 10));
-  servo1_0.writeMicroseconds(gerakServo(ata));
-  servo1_1.writeMicroseconds(gerakServo(ten));
-  servo1_2.writeMicroseconds(gerakServo(baw));
-  servo2_0.writeMicroseconds(gerakServo(ata));
-  servo2_1.writeMicroseconds(gerakServo(ten));
-  servo2_2.writeMicroseconds(gerakServo(baw + 5));
-
-  servo3_0.writeMicroseconds(gerakServo((90 + ata)));
-  servo3_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo3_2.writeMicroseconds(gerakServo(baw));
-  servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
-  servo4_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo4_2.writeMicroseconds(gerakServo(baw));
-  servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
-  servo5_1.writeMicroseconds(gerakServo((90 + ten)));
-  servo5_2.writeMicroseconds(gerakServo(baw));
-}
+//     hitungTangga++;
+//   }
+// }
 */
 
 void pasangKaki() {
@@ -938,24 +879,57 @@ void pasangKaki() {
   servo5_2.writeMicroseconds(gerakServo(90));
 }
 
+void diam() {
+  int ata = 45;  //semakin kecil semakin
+  int ten = 60;  //semakin kecil semakin
+  int baw = 90;  //semakin kecil semakin ketutup
+  servo0_0.writeMicroseconds(gerakServo(ata));
+  servo0_1.writeMicroseconds(gerakServo(ten));
+  servo0_2.writeMicroseconds(gerakServo(baw + 10));
+  servo1_0.writeMicroseconds(gerakServo(ata));
+  servo1_1.writeMicroseconds(gerakServo(ten));
+  servo1_2.writeMicroseconds(gerakServo(baw));
+  servo2_0.writeMicroseconds(gerakServo(ata));
+  servo2_1.writeMicroseconds(gerakServo(ten));
+  servo2_2.writeMicroseconds(gerakServo(baw + 5));
+
+  servo3_0.writeMicroseconds(gerakServo((90 + ata)));
+  servo3_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo3_2.writeMicroseconds(gerakServo(baw));
+  servo4_0.writeMicroseconds(gerakServo((90 + ata) - 5));
+  servo4_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo4_2.writeMicroseconds(gerakServo(baw));
+  servo5_0.writeMicroseconds(gerakServo((90 + ata) + 3));
+  servo5_1.writeMicroseconds(gerakServo((90 + ten)));
+  servo5_2.writeMicroseconds(gerakServo(baw));
+}
+
 void loop() {
-<<<<<<< Updated upstream
-  // int input = bacaUART();
-=======
->>>>>>> Stashed changes
-  int input = 0;
-  if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
-    if (input != inputBefore)  //&&input<10&&inputBefore<10)posisi
-    {
-      ubahGerak = 0;
-      inisialisasiAwal();
-      inputBefore = input;
+  if (ftdi.available() > 0) {
+    char keyInput = ftdi.read();
+    switch (keyInput) {
+      case 'A':
+        input = 0;
+        break;
+      case 'D':
+        input = 1;
+        break;
+      defalut :
+        
     }
+    if (leg[0].posisi == rate2 || leg[1].posisi == rate2 || leg[2].posisi == rate2 || leg[3].posisi == rate2 || leg[4].posisi == rate2 || leg[5].posisi == rate2) {
+      if (input != inputBefore) {
+        ubahGerak = 0;
+        inisialisasiAwal();
+        inputBefore = input;
+      }
+    }
+    if (inputBefore == 0) {
+      setKaki();
+      syncLeg();
+    } else if (inputBefore > 0) {
+      setKaki();
+      directions();
+    } else syncLeg();
   }
-  if (inputBefore == 0) {
-    setKaki();
-    syncLeg();
-  } 
-  else if (inputBefore > 0) directions();
-  // else syncLeg();
 }
