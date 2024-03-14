@@ -1,4 +1,4 @@
-rate = 8;
+rate = 5;
 rate1 = (rate + 1);
 rate2 = ((rate * 2) + 1);
 rate3 = ((rate * 3) + 1);
